@@ -63,7 +63,7 @@ jobs:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          python fetch_schedule_github.py
+          python get_schedule.py
 
       - name: Display schedule
         run: |
@@ -85,8 +85,6 @@ jobs:
           else
             echo "No changes to schedule"
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Summary
         if: always()

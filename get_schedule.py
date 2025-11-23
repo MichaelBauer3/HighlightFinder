@@ -7,7 +7,6 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from config import EMAIL, PASSWORD
 
 logging.basicConfig(
     level=logging.INFO,
