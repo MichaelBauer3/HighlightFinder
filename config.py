@@ -18,8 +18,10 @@ class Config:
 config = Config()
 
 # Credentials
-EMAIL = config.get_user_settings("EMAIL_ADDRESS")
-PASSWORD = config.get_user_settings("PASSWORD")
+DAY_SMART_EMAIL = config.get_user_settings("DAY_SMART_EMAIL_ADDRESS")
+DAY_SMART_PASSWORD = config.get_user_settings("DAY_SMART_PASSWORD")
+LIVE_BARN_EMAIL = config.get_user_settings("LIVE_BARN_EMAIL_ADDRESS")
+LIVE_BARN_PASSWORD = config.get_user_settings("LIVE_BARN_PASSWORD")
 GITHUB_USERNAME = config.get_user_settings("GITHUB_USERNAME")
 GITHUB_REPO = config.get_user_settings("GITHUB_REPO")
 GITHUB_BRANCH = config.get_user_settings("GITHUB_BRANCH")

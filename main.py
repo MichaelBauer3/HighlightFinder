@@ -1,9 +1,11 @@
+import json
 import logging
 import time
 
-from scrapers.auth import DaysSmartAuth
-from scrapers.schedule import DaysSmartSchedule
-from config import EMAIL, PASSWORD, TEAMS
+from scrapers import LiveBarnAuth, LiveBarnVideo
+from scrapers.day_smart_auth import DaySmartAuth
+from scrapers.day_smart_schedule import DaySmartSchedule
+from config import DAY_SMART_EMAIL, DAY_SMART_PASSWORD, LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, TEAMS
 
 
 def main():
@@ -13,17 +15,27 @@ def main():
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
 
-    auth = DaysSmartAuth(EMAIL, PASSWORD, headless=True)
+    auth = DaySmartAuth(DAY_SMART_EMAIL, DAY_SMART_PASSWORD, headless=False)
     try:
         driver = auth.login()
         time.sleep(5)
 
-        sched_scraper = DaysSmartSchedule(driver)
+        with open('schedule_data.json') as f:
+            schedule = json.load(f)
 
-        sched_scraper.navigate_to_schedule()
-        games = sched_scraper.get_scheduled_games(TEAMS[0], 21)
+        if not schedule['games']:
+            print("No games in schedule!")
+            return
 
-        print(games)
+        game = schedule['games'][0]
+
+        live_barn = LiveBarnAuth(LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, driver)
+        live_barn.login()
+        live_barn_video = LiveBarnVideo(driver)
+        live_barn_video.navigate_to_favorites()
+        live_barn_video.navigate_to_games(game)
+        time.sleep(10)
+
 
     finally:
         auth.logout()

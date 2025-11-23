@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 logger = logging.getLogger(__name__)
 
-class DaysSmartAuth:
+class DaySmartAuth:
 
     BASE_URL = "https://apps.daysmartrecreation.com/dash/index.php?Action=Auth/login&company=rochester"
 

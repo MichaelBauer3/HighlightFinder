@@ -8,7 +8,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class DaysSmartSchedule:
+class DaySmartSchedule:
     BASE_URL = "https://apps.daysmartrecreation.com/dash/x/#/online/rochester/activities"
 
     def __init__(self, driver):
