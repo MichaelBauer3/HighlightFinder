@@ -1,0 +1,43 @@
+# .gitignore
+
+# Credentials
+local_settings.json
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Data files
+data/recordings/*.mp4
+data/recordings/*.avi
+*.mp4
+*.avi
+data/metadata/schedule_cache.json
+
+# Keep directory structure but ignore video files
+!data/recordings/.gitkeep
+!data/clips/.gitkeep
+
+# Logs
+logs/*.log
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
