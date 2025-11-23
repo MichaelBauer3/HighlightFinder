@@ -56,15 +56,6 @@ def fetch_schedule():
         logger.info(f"Schedule saved to {output_path}")
         logger.info(f"Found {len(all_games)} games for {len(TEAMS)} teams")
 
-        # TODO - Delete this
-        # Print summary for GitHub Actions log
-        print("\n" + "=" * 60)
-        print("SCHEDULE FETCH SUMMARY")
-        print("=" * 60)
-        for game in all_games:
-            print(f"  {game['team']}: {game['date']} {game['time']} - {game['field']}")
-        print("=" * 60 + "\n")
-
         return schedule_data
 
     except Exception as e:
