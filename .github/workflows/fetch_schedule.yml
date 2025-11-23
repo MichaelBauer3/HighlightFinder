@@ -1,0 +1,105 @@
+name: Fetch Game Schedule
+
+on:
+  # Run every Sunday at 12:00 PM EST / 1:00 PM EDT
+  schedule:
+    - cron: '0 17 * * 0'
+
+
+jobs:
+  fetch-schedule:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Chrome
+        run: |
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Install ChromeDriver
+        run: |
+          # Get Chrome version
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1)
+          echo "Chrome version: $CHROME_VERSION"
+          
+          # Install matching ChromeDriver
+          wget -q https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions-with-downloads.json
+          CHROMEDRIVER_URL=$(jq -r '.channels.Stable.downloads.chromedriver[] | select(.platform=="linux64") | .url' last-known-good-versions-with-downloads.json)
+          echo "Downloading ChromeDriver from: $CHROMEDRIVER_URL"
+          
+          wget -q "$CHROMEDRIVER_URL" -O chromedriver-linux64.zip
+          unzip -q chromedriver-linux64.zip
+          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/chromedriver
+          chromedriver --version
+
+      - name: Install Python dependencies
+        run: |
+          pip install selenium requests
+
+      - name: Fetch schedule from website
+        env:
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          python fetch_schedule_github.py
+
+      - name: Display schedule
+        run: |
+          echo "Schedule fetched successfully!"
+          echo ""
+          cat schedule_data.json
+
+      - name: Commit schedule to repository
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
+          git add schedule_data.json
+          
+          # Only commit if there are changes
+          if ! git diff --staged --quiet; then
+            git commit -m "Update game schedule - $(date +'%Y-%m-%d %H:%M UTC')"
+            git push
+            echo "Schedule updated and pushed to repository"
+          else
+            echo "No changes to schedule"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "================================"
+          echo "SCHEDULE FETCH COMPLETE"
+          echo "================================"
+          
+          if [ -f schedule_data.json ]; then
+            GAME_COUNT=$(jq '.game_count // 0' schedule_data.json)
+            STATUS=$(jq -r '.status // "unknown"' schedule_data.json)
+            UPDATED=$(jq -r '.updated_at // "unknown"' schedule_data.json)
+            
+            echo "Status: $STATUS"
+            echo "Games found: $GAME_COUNT"
+            echo "Updated at: $UPDATED"
+            
+            if [ "$STATUS" = "success" ] && [ "$GAME_COUNT" -gt 0 ]; then
+              echo ""
+              echo "Game details:"
+              jq -r '.games[] | "  - \(.team) vs \(.opponent): \(.date) at \(.time) (\(.field))"' schedule_data.json
+            fi
+          else
+            echo "schedule_data.json not found"
+          fi
+          
+          echo "================================"

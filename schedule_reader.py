@@ -49,8 +49,8 @@ class ScheduleReader:
 
             if data.get('status') == 'success':
                 games = data.get('games', [])
-                logger.info(f"✓ Fetched {len(games)} games from GitHub")
-                logger.info(f"  Last updated: {data.get('updated_at')}")
+                logger.info(f"Fetched {len(games)} games from GitHub")
+                logger.info(f"Last updated: {data.get('updated_at')}")
 
                 # Cache the schedule locally
                 self._save_schedule_cache(data)
