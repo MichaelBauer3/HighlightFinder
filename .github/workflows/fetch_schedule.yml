@@ -85,6 +85,8 @@ jobs:
           else
             echo "No changes to schedule"
           fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Summary
         if: always()
