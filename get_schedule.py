@@ -1,12 +1,14 @@
 """
 Runs in GitHub Actions to fetch game schedule
 """
-
 import os
 import json
 import logging
 from datetime import datetime
 from pathlib import Path
+
+from scrapers.driver_manager import DriverManager
+from services.day_smart_service import DaySmartService
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,10 +20,10 @@ logger = logging.getLogger(__name__)
 def fetch_schedule():
     """Fetch schedule using Selenium"""
     from scrapers import DaySmartAuth, DaySmartSchedule
-    from config import TEAMS, DAY_SMART_EMAIL, DAY_SMART_PASSWORD
+    from config import TEAMS
 
-    email = DAY_SMART_EMAIL#os.getenv('EMAIL_ADDRESS')
-    password = DAY_SMART_PASSWORD#os.getenv('PASSWORD')
+    email = os.getenv('EMAIL_ADDRESS')
+    password = os.getenv('PASSWORD')
 
     if not email or not password:
         logger.error("Missing credentials in environment variables")
@@ -29,14 +31,19 @@ def fetch_schedule():
 
     logger.info("Starting schedule fetch...")
 
+    driver = DriverManager.create_driver(headless=True)
+
     try:
-        auth = DaySmartAuth(email, password, headless=True)
-        driver = auth.login()
-        scraper = DaySmartSchedule(driver)
 
-        scraper.navigate_to_schedule()
+        day_smart_auth = DaySmartAuth(driver, email, password)
+        day_smart_schedule = DaySmartSchedule(driver)
+        day_smart_service = DaySmartService(day_smart_auth, day_smart_schedule)
 
-        all_games = scraper.get_all_team_games(TEAMS, days=21)
+        day_smart_service.login()
+
+        day_smart_service.navigate_to_schedule()
+
+        all_games = day_smart_service.get_all_team_games(TEAMS, days=21)
 
         # Prepare data to save
         schedule_data = {

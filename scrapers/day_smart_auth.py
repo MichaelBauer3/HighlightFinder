@@ -1,9 +1,8 @@
 import logging
 import time
 
-from selenium import webdriver
-from selenium.common import NoSuchElementException, TimeoutException
-from selenium.webdriver.chrome.options import Options
+from selenium.common import TimeoutException
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -14,52 +13,14 @@ class DaySmartAuth:
 
     BASE_URL = "https://apps.daysmartrecreation.com/dash/index.php?Action=Auth/login&company=rochester"
 
-    def __init__(self, email: str, password: str, headless: bool = False):
+    def __init__(self, driver: WebDriver, email: str, password: str):
         self.email = email
         self.password = password
-        self.headless = headless
-        self.driver = None
+        self.driver = driver
         self.is_logged_in = False
 
-    def _setup_chrome_options(self):
-        """Configure Chrome options"""
-        chrome_options = Options()
-
-        if self.headless:
-            chrome_options.add_argument('--headless=new')
-
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-
-        chrome_options.add_argument('--window-size=1920,1080')
-
-        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        chrome_options.add_experimental_option('useAutomationExtension', False)
-
-        chrome_options.add_argument(
-            '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-
-        return chrome_options
-
-    def _init_driver(self):
-        """Initialize the Chrome WebDriver"""
-        try:
-            chrome_options = self._setup_chrome_options()
-            self.driver = webdriver.Chrome(options=chrome_options)
-            self.driver.implicitly_wait(10)
-            logger.info("Chrome WebDriver initialized successfully")
-        except Exception as e:
-            logger.error(f"Failed to initialize Chrome WebDriver: {e}")
-            raise
-
-    def login(self):
+    def login(self) -> bool:
         """Login to DaysSmart"""
-
-        if self.driver is None:
-            self._init_driver()
-
         try:
             logger.info(f"Navigating to login page: {self.BASE_URL}")
             self.driver.get(self.BASE_URL)
@@ -104,32 +65,44 @@ class DaySmartAuth:
                     )
                     self.is_logged_in = True
                     logger.info("Login successful!")
-                    return self.driver
+                    return self.is_logged_in
                 except TimeoutException:
                     logger.warning("Login may have failed - could not verify success")
 
             except TimeoutException:
                 logger.error("Login timed out - URL did not change")
-                raise Exception("Login failed - page did not redirect")
+                return self.is_logged_in
 
-            return self.driver
+            return self.is_logged_in
 
         except TimeoutException as e:
             logger.error(f"Timeout during login: {e}")
-            raise Exception(f"Login timed out: {e}")
+            return self.is_logged_in
 
         except Exception as e:
             logger.error(f"Login failed: {e}")
-            raise
+            return self.is_logged_in
 
     def logout(self):
         """Logout and close the browser"""
-        if self.driver:
-            try:
-                logger.info("Logging out and closing browser...")
-                self.driver.quit()
-                self.driver = None
-                self.is_logged_in = False
-                logger.info("Browser closed successfully")
-            except Exception as e:
-                logger.error(f"Error during logout: {e}")
+        if not self.is_logged_in:
+            logger.warning("Not logged in, cannot logout.")
+
+        try:
+            logger.info("Logging out...")
+            wait = WebDriverWait(self.driver, 10)
+
+            logout_button = wait.until(
+                ec.element_to_be_clickable(
+                    (By.XPATH, "//span[contains(@class, 'dropdown-item') and contains(text(), 'Log out')]")
+                )
+            )
+            logout_button.click()
+
+            self.is_logged_in = False
+            logger.info("Logout successful!")
+            return True
+
+        except Exception as e:
+            logger.error(f"Logout failed: {e}")
+            return False

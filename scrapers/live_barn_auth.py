@@ -1,9 +1,8 @@
 import logging
 import time
 
-from selenium import webdriver
-from selenium.common import NoSuchElementException, TimeoutException
-from selenium.webdriver.chrome.options import Options
+from selenium.common import TimeoutException
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -14,13 +13,13 @@ class LiveBarnAuth:
 
     BASE_URL = "https://watch.livebarn.com/en/signin"
 
-    def __init__(self, email: str, password: str, driver):
+    def __init__(self, driver: WebDriver, email: str, password: str):
         self.email = email
         self.password = password
         self.driver = driver
         self.is_logged_in = False
 
-    def login(self):
+    def login(self) -> bool:
         """Login to LiveBarn"""
 
         try:
@@ -67,23 +66,22 @@ class LiveBarnAuth:
                     )
                     self.is_logged_in = True
                     logger.info("Login successful!")
-                    return self.driver
+                    return self.is_logged_in
                 except TimeoutException:
                     logger.warning("Login may have failed - could not verify success")
+                    return self.is_logged_in
 
             except TimeoutException:
                 logger.error("Login timed out - URL did not change")
-                raise Exception("Login failed - page did not redirect")
-
-            return self.driver
+                return self.is_logged_in
 
         except TimeoutException as e:
             logger.error(f"Timeout during login: {e}")
-            raise Exception(f"Login timed out: {e}")
+            return self.is_logged_in
 
         except Exception as e:
             logger.error(f"Login failed: {e}")
-            raise
+            return self.is_logged_in
 
     def logout(self):
         """Logout and close the browser"""

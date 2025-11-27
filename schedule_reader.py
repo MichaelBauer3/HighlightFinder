@@ -1,10 +1,3 @@
-# laptop_scheduler.py
-"""
-Laptop Scheduler - Fetches schedule from GitHub and manages recordings
-Place in: project root
-Run with: python laptop_scheduler.py
-"""
-
 import logging
 import json
 import requests
@@ -22,10 +15,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Import from config
 from config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH
 
-# URL to raw schedule file in GitHub
 SCHEDULE_URL = f"https://raw.githubusercontent.com/{GITHUB_USERNAME}/{GITHUB_REPO}/{GITHUB_BRANCH}/schedule_data.json"
 
 

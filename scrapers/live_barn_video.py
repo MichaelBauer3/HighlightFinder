@@ -96,6 +96,14 @@ class LiveBarnVideo:
             fullscreen_button.click()
             logger.info("Watching in Fullscreen")
 
+            pano_button = self.wait.until(
+                ec.element_to_be_clickable(
+                    (By.XPATH, "//button[@aria-label='Panorama']")
+                )
+            )
+            pano_button.click()
+            logger.info("Watching in Panorama")
+
         except Exception as e:
             logger.error(f"Could not select field {field_name}: {e}")
             raise

@@ -21,10 +21,13 @@ data/recordings/*.avi
 *.mp4
 *.avi
 data/metadata/schedule_cache.json
+dataset_digits/
 
 # Keep directory structure but ignore video files
 !data/recordings/.gitkeep
 !data/clips/.gitkeep
+
+/ml/*.keras
 
 # Logs
 logs/*.log
