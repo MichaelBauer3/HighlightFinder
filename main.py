@@ -46,7 +46,7 @@ def main():
         video_loader = VideoLoader()
         score_validator = ScoreValidator()
 
-        live_barn_service = LiveBarnService(LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD)
+        live_barn_service = LiveBarnService(live_barn_auth, live_barn_video)
         video_service = VideoService(
             scoreboard_finder,
             scoreboard_reader,
@@ -73,10 +73,12 @@ def main():
 
             # Screen Record the game and save it to data/recordings/{team_name}_{date}.mp4
             video_service.screen_record_for_duration(3600)
-            file_name = f"{game['home_team'].lower().replace(' ', '_')}_{game['date'].replace('-', '')}.mp4"
+            team_name = game['home_team'].lower().replace(' ', '_')
+            file_name = f"{team_name}_{game['date'].replace('-', '')}.mp4"
 
             # Load the video
-            for timestamp, frame in video_service.stream_frames(file_name, sample_rate=10):
+            sample_rate = 10
+            for timestamp, frame in video_service.stream_frames(file_name, sample_rate):
 
                 # Process frame recorded video
                 score_processed = video_service.process_to_digit(frame, config, rotation_angle)
@@ -89,7 +91,8 @@ def main():
 
                 # If valid, clip previous N seconds and next M seconds and save the clip
                 if is_valid_score:
-                    pass
+                    goal_file_name = f"goal_{score}_{team_name}.mp4"
+                    video_service.clip_goal(file_name, goal_file_name, (timestamp - sample_rate), 25)
 
 
 

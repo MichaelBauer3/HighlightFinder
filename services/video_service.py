@@ -36,3 +36,6 @@ class VideoService:
 
     def validate_score(self, score: int) -> bool:
         return self.score_validator.validate_score(score)
+
+    def clip_goal(self, source_video: str, clip_name: str, start: int, duration: int) -> bool:
+        return self.video_loader.clip_video(source_video, clip_name, start, duration)

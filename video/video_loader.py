@@ -1,11 +1,12 @@
 import os
+import subprocess
 from pathlib import Path
 
 import cv2
 import logging
 import glob
 
-from config import RECORDINGS_DIR
+from config import RECORDINGS_DIR, CLIPS_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -91,3 +92,33 @@ class VideoLoader:
     @staticmethod
     def _make_path(file_name: str) -> Path:
         return Path(RECORDINGS_DIR) / file_name
+
+    @staticmethod
+    def clip_video(file_name: str, clip_file_name: str, start_time: int, duration: int) -> bool:
+
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-ss", str(start_time),
+            "-i", file_name,
+            "-t", str(duration),
+            "-c", "copy",
+            clip_file_name,
+        ]
+
+        result = subprocess.run(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+
+        if result.returncode != 0:
+            logger.error(f"FFmpeg clip failed:\n{result.stderr.decode()}")
+            return False
+
+        logger.info(f"Clip created: {clip_file_name}")
+        return True
+
+    @staticmethod
+    def count_clips():
+        return len([name for name in os.listdir(CLIPS_DIR) if os.path.isfile(os.path.join(CLIPS_DIR, name))])
