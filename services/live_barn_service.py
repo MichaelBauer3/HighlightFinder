@@ -12,9 +12,9 @@ class LiveBarnService:
 
     def get_live_video(self, game_data) -> None:
         self.live_barn_video.navigate_to_favorites()
-        self.live_barn_video.navigate_to_games(game_data)
+        self.live_barn_video.navigate_to_live_games(game_data)
 
     def get_vod_video(self, game_data) -> None:
         self.live_barn_video.navigate_to_favorites()
-        # TODO
+        self.live_barn_video.navigate_to_vod_games(game_data)
         pass

@@ -128,12 +128,16 @@ class DaySmartSchedule:
                 'opponent': opponent,
                 'datetime': game_datetime.isoformat(),
                 'date': game_datetime.strftime('%Y-%m-%d'),
-                'time': game_datetime.strftime('%I:%M %p'),
+                'time': game_datetime.strftime('%I:%M'),
                 'day_of_week': game_datetime.strftime('%A'),
                 'field': field,
                 'location': location_text,
                 'is_home': is_home,
                 'display_time': time_text,
+                'game_year': game_datetime.strftime('%Y'),
+                'game_month': game_datetime.strftime('%m'),
+                'game_day': game_datetime.strftime('%-d'),
+                'game_month_and_year': game_datetime.strftime('%B %Y'),
             }
 
             return game_info

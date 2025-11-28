@@ -7,6 +7,7 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
+from config import DAY_SMART_EMAIL, DAY_SMART_PASSWORD
 from scrapers.driver_manager import DriverManager
 from services.day_smart_service import DaySmartService
 
@@ -22,8 +23,8 @@ def fetch_schedule():
     from scrapers import DaySmartAuth, DaySmartSchedule
     from config import TEAMS
 
-    email = os.getenv('EMAIL_ADDRESS')
-    password = os.getenv('PASSWORD')
+    email = DAY_SMART_EMAIL#os.getenv('EMAIL_ADDRESS')
+    password = DAY_SMART_PASSWORD#os.getenv('PASSWORD')
 
     if not email or not password:
         logger.error("Missing credentials in environment variables")
@@ -43,7 +44,7 @@ def fetch_schedule():
 
         day_smart_service.navigate_to_schedule()
 
-        all_games = day_smart_service.get_all_team_games(TEAMS, days=21)
+        all_games = day_smart_service.get_all_team_games(TEAMS, days=7)
 
         # Prepare data to save
         schedule_data = {
@@ -81,7 +82,6 @@ def fetch_schedule():
             json.dump(error_data, f, indent=2)
 
         raise
-
 
 if __name__ == '__main__':
     fetch_schedule()

@@ -57,6 +57,11 @@ def main():
         field = str()
         for game in games:
 
+            # DELETE AFTER TESTING
+            live_barn_service.login()
+            live_barn_service.get_vod_video(game)
+            # END DELETE AFTER TESTING
+
             # Get game details
             field = FIELD_CONFIGS[game['field']]
             rotation_angle = field['rotation_angle']
