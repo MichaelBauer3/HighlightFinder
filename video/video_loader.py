@@ -47,7 +47,7 @@ class VideoLoader:
         """
         logger.info(f"Processing video with sample rate: {sample_rate} seconds")
 
-        video_path = self._make_path(file_name)
+        video_path = self._make_path(RECORDINGS_DIR, file_name)
 
         self._load_video_info(video_path)
 
@@ -79,7 +79,7 @@ class VideoLoader:
 
     def delete_video(self, file_name: str, all_files: bool = False):
         """Clean up the recordings folder"""
-        video_path = self._make_path(file_name)
+        video_path = self._make_path(RECORDINGS_DIR, file_name)
 
         if all_files and video_path.parent.exists():
             files_to_delete = glob.glob(f"{video_path.parent}/*.mp4")
@@ -90,20 +90,22 @@ class VideoLoader:
             os.remove(video_path)
 
     @staticmethod
-    def _make_path(file_name: str) -> Path:
-        return Path(RECORDINGS_DIR) / file_name
+    def _make_path(directory: str, file_name: str) -> Path:
+        return Path(directory) / file_name
 
-    @staticmethod
-    def clip_video(file_name: str, clip_file_name: str, start_time: int, duration: int) -> bool:
 
+    def clip_video(self, file_name: str, clip_file_name: str, start_time: int, duration: int) -> bool:
+
+        file_path = self._make_path(RECORDINGS_DIR, file_name)
+        clip_file_path = self._make_path(CLIPS_DIR, clip_file_name)
         cmd = [
             "ffmpeg",
             "-y",
             "-ss", str(start_time),
-            "-i", file_name,
+            "-i", file_path,
             "-t", str(duration),
             "-c", "copy",
-            clip_file_name,
+            clip_file_path,
         ]
 
         result = subprocess.run(

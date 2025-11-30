@@ -19,8 +19,8 @@ class VideoService:
         self.video_loader = video_loader
         self.score_validator = score_validator
 
-    def screen_record_for_duration(self, duration_seconds: int) -> None:
-        self.screen_record_for_duration(duration_seconds)
+    def screen_record_for_duration(self, team_name: str, game_date:str, duration_seconds: int) -> bool:
+        return self.screen_recorder.record_for_duration(team_name, game_date, duration_seconds)
 
     def stream_frames(self, file_name: str, sample_rate: int = 3):
         return self.video_loader.frames_generator(file_name, sample_rate)
@@ -39,3 +39,6 @@ class VideoService:
 
     def clip_goal(self, source_video: str, clip_name: str, start: int, duration: int) -> bool:
         return self.video_loader.clip_video(source_video, clip_name, start, duration)
+
+    def delete_video(self, file_name: str) -> bool:
+        return self.video_loader.delete_video(file_name)

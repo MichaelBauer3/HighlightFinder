@@ -4,7 +4,6 @@ Interactive tool to find home and away score regions
 """
 
 import cv2
-import sys
 
 
 def mouse_callback(event, x, y, flags, param):

@@ -1,8 +1,8 @@
 import os
 import random
-import tensorflow as tf
+
 import numpy as np
-from PIL import Image
+import tensorflow as tf
 
 
 def test_random_samples(model, dataset_root="../dataset_digits", num_samples=10, show_images=False):

@@ -107,21 +107,7 @@ class LiveBarnVideo:
             logger.info(f"Selected LIVE for field: {field_name}")
             time.sleep(3)
 
-            fullscreen_button = self.wait.until(
-                ec.element_to_be_clickable(
-                    (By.XPATH, "//button[@type='button' and @aria-label='Fullscreen']")
-                )
-            )
-            fullscreen_button.click()
-            logger.info("Watching in Fullscreen")
-
-            pano_button = self.wait.until(
-                ec.element_to_be_clickable(
-                    (By.XPATH, "//button[@aria-label='Panorama']")
-                )
-            )
-            pano_button.click()
-            logger.info("Watching in Panorama")
+            self._select_fullscreen_pano()
 
         except Exception as e:
             logger.error(f"Could not select field {field_name}: {e}")
@@ -181,7 +167,7 @@ class LiveBarnVideo:
 
             day_button = self.wait.until(
                 ec.element_to_be_clickable(
-                    (By.XPATH, f"//span[contains(text(), '{day}')]")
+                    (By.XPATH, f"//span[text()='{day}' and ancestor::div[.//span[text()='{month_and_year}']]]")
                 )
             )
             day_button.click()
@@ -189,7 +175,7 @@ class LiveBarnVideo:
 
             time_button = self.wait.until(
                 ec.element_to_be_clickable(
-                    (By.XPATH, f"//button[contains(text(), '{game_time}')]")
+                    (By.XPATH, f"//span[contains(text(), '{game_time}')]")
                 )
             )
             time_button.click()
@@ -197,13 +183,14 @@ class LiveBarnVideo:
 
             watch_button = self.wait.until(
                 ec.element_to_be_clickable(
-                    (By.XPATH, f"//button[.//span[text()='Watch']]")
+                    (By.XPATH, "//button[text()='Watch']")
                 )
             )
             watch_button.click()
             time.sleep(3)
             logger.info(f"Selected VOD game on {month_and_year} {day} at {game_time}")
 
+            self._select_fullscreen_pano()
 
         except Exception as e:
             logger.error(f"Could not select VOD game on {month_and_year} {day} at {game_time}: {e}")
@@ -235,3 +222,27 @@ class LiveBarnVideo:
             logger.error(f"Could not click previous month button: {e}")
             raise
 
+    def _select_fullscreen_pano(self):
+        """
+        Select the fullscreen and panoramic view
+        """
+        try:
+            pano_button = self.wait.until(
+                ec.element_to_be_clickable(
+                    (By.XPATH, "//button[@aria-label='Panoramic']")
+                )
+            )
+            pano_button.click()
+            logger.info("Watching in Panorama")
+
+            fullscreen_button = self.wait.until(
+                ec.element_to_be_clickable(
+                    (By.XPATH, "//button[@type='button' and @aria-label='Fullscreen']")
+                )
+            )
+            fullscreen_button.click()
+            logger.info("Watching in Fullscreen")
+
+        except Exception as e:
+            logger.error(f"Could not select fullscreen or panoramic view: {e}")
+            raise

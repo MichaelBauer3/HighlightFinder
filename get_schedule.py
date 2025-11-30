@@ -1,7 +1,6 @@
 """
 Runs in GitHub Actions to fetch game schedule
 """
-import os
 import json
 import logging
 from datetime import datetime

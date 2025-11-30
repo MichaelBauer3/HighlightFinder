@@ -7,10 +7,10 @@ from video.scoreboard_finder import ScoreboardFinder
 from config import FIELD_CONFIGS
 
 
-VIDEO_PATH = "./data/recordings/SampleScoreChange.mp4"
+VIDEO_PATH = "ewoks_fc_20251120.mp4"
 FIELD = "East Field"
 
-REGION = FIELD_CONFIGS[FIELD]["home_score_region"]
+REGION = FIELD_CONFIGS[FIELD]["away_score_region"]
 ROTATION = FIELD_CONFIGS[FIELD]['rotation_angle']
 
 # Output dir
@@ -19,7 +19,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 def main():
-    video = VideoLoader(VIDEO_PATH)
+    video = VideoLoader()
     finder = ScoreboardFinder()
 
     print("\nExtracting digit frames...")
@@ -28,7 +28,7 @@ def main():
     frame_index = 0
 
     # sample_rate controls how often frames are grabbed
-    for timestamp, frame in video.frames_generator(sample_rate=1):
+    for timestamp, frame in video.frames_generator(VIDEO_PATH, sample_rate=1):
         frame_index += 1
 
         digit_img = finder.preprocess_scoreboard_region(frame, REGION, ROTATION)

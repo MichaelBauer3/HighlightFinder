@@ -88,7 +88,7 @@ class LiveBarnAuth:
         if self.driver:
             try:
                 logger.info("Logging out and closing browser...")
-                self.driver.quit()
+                self.driver.close()
                 self.driver = None
                 self.is_logged_in = False
                 logger.info("Browser closed successfully")

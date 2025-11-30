@@ -17,4 +17,6 @@ class LiveBarnService:
     def get_vod_video(self, game_data) -> None:
         self.live_barn_video.navigate_to_favorites()
         self.live_barn_video.navigate_to_vod_games(game_data)
-        pass
+
+    def logout(self):
+        self.live_barn_auth.logout()

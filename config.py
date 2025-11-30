@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 from pathlib import Path
 
 
@@ -71,10 +70,9 @@ FIELD_CONFIGS = {
 RECORDING_DURATION = 60
 RECORDING_QUALITY = "720p"
 RECORDING_FPS = 30
-VIDEO_SIZE = '1280x720'
-
-# Cleanup
-DELETE_RECORDING_AFTER_PROCESSING = True
+VIDEO_SIZE = '1920x1080'
+VIDEO_WIDTH = 1920
+VIDEO_HEIGHT = 1080
 
 # Paths
 DATA_DIR = Path("data")

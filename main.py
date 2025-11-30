@@ -1,23 +1,13 @@
-import json
 import logging
 import time
 
-import cv2
-import numpy as np
-from PIL import Image
-from pytesseract import pytesseract
-
-from get_schedule import fetch_schedule
 from schedule_reader import ScheduleReader
 from scrapers import LiveBarnAuth, LiveBarnVideo
-from scrapers.day_smart_auth import DaySmartAuth
-from scrapers.day_smart_schedule import DaySmartSchedule
-from config import DAY_SMART_EMAIL, DAY_SMART_PASSWORD, LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, TEAMS, FIELD_CONFIGS
+from config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, FIELD_CONFIGS
 from scrapers.driver_manager import DriverManager
-from services.day_smart_service import DaySmartService
 from services.live_barn_service import LiveBarnService
 from services.video_service import VideoService
-from video import VideoLoader, ScreenRecorder, ScoreboardReader, scoreboard_reader, ScoreValidator
+from video import VideoLoader, ScreenRecorder, ScoreboardReader, ScoreValidator
 from video.scoreboard_finder import ScoreboardFinder
 
 
@@ -54,13 +44,7 @@ def main():
             video_loader,
             score_validator)
 
-        field = str()
         for game in games:
-
-            # DELETE AFTER TESTING
-            live_barn_service.login()
-            live_barn_service.get_vod_video(game)
-            # END DELETE AFTER TESTING
 
             # Get game details
             field = FIELD_CONFIGS[game['field']]
@@ -77,12 +61,19 @@ def main():
             live_barn_service.get_vod_video(game)
 
             # Screen Record the game and save it to data/recordings/{team_name}_{date}.mp4
-            video_service.screen_record_for_duration(3600)
-            team_name = game['home_team'].lower().replace(' ', '_')
-            file_name = f"{team_name}_{game['date'].replace('-', '')}.mp4"
+            team_name = game['team'].lower().replace(' ', '_')
+            game_date = game['date']
+            file_name = f"{team_name}_{game_date.replace('-', '')}.mp4"
+
+            # Let the game load (We don't want to see the LiveBarn Navigation)
+            time.sleep(10)
+            video_service.screen_record_for_duration(team_name, game_date, 55 * 60)
+
+            # Stop playing video and log out
+            live_barn_service.logout()
 
             # Load the video
-            sample_rate = 10
+            sample_rate = 1
             for timestamp, frame in video_service.stream_frames(file_name, sample_rate):
 
                 # Process frame recorded video
@@ -97,12 +88,12 @@ def main():
                 # If valid, clip previous N seconds and next M seconds and save the clip
                 if is_valid_score:
                     goal_file_name = f"goal_{score}_{team_name}.mp4"
-                    video_service.clip_goal(file_name, goal_file_name, (timestamp - sample_rate), 25)
+                    video_service.clip_goal(file_name, goal_file_name, (timestamp - 30),30)
 
+            video_service.delete_video(file_name)
 
-
-    finally:
-        driver.quit()
+    except Exception as e:
+        logging.error(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()
