@@ -63,7 +63,7 @@ jobs:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          python fetch_schedule.py
+          python get_schedule.py
 
       - name: Display schedule
         run: |
