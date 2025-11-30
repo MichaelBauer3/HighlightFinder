@@ -3,6 +3,7 @@ Runs in GitHub Actions to fetch game schedule
 """
 import json
 import logging
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -22,8 +23,8 @@ def fetch_schedule():
     from scrapers import DaySmartAuth, DaySmartSchedule
     from config import TEAMS
 
-    email = DAY_SMART_EMAIL#os.getenv('EMAIL_ADDRESS')
-    password = DAY_SMART_PASSWORD#os.getenv('PASSWORD')
+    email = os.getenv('EMAIL_ADDRESS')
+    password = os.getenv('PASSWORD')
 
     if not email or not password:
         logger.error("Missing credentials in environment variables")
