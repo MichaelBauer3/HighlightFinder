@@ -7,7 +7,6 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-from config import DAY_SMART_EMAIL, DAY_SMART_PASSWORD
 from scrapers.driver_manager import DriverManager
 from services.day_smart_service import DaySmartService
 

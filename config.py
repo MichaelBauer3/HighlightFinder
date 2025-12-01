@@ -1,10 +1,13 @@
 import json
+import os
 from pathlib import Path
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class Config:
     def __init__(self, path="local_settings.json"):
-        self.config_path = Path(path)
+        combined_path = os.path.join(SCRIPT_DIR, path)
+        self.config_path = Path(combined_path)
         if self.config_path.exists():
             with open(self.config_path) as json_file:
                 self._config = json.load(json_file)

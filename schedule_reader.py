@@ -1,5 +1,7 @@
 import logging
 import json
+import os
+
 import requests
 from datetime import datetime
 from pathlib import Path
@@ -18,13 +20,14 @@ logger = logging.getLogger(__name__)
 from config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH
 
 SCHEDULE_URL = f"https://raw.githubusercontent.com/{GITHUB_USERNAME}/{GITHUB_REPO}/{GITHUB_BRANCH}/schedule_data.json"
-
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class ScheduleReader:
     """Manages game recordings based on GitHub schedule"""
 
     def __init__(self):
-        self.schedule_cache = Path("data/metadata/schedule_cache.json")
+        path = os.path.join(SCRIPT_DIR, 'schedule_cache.json')
+        self.schedule_cache = Path(path)
         self.scheduled_games = []
 
     def fetch_schedule_from_github(self):
@@ -111,6 +114,48 @@ class ScheduleReader:
 
         self.show_upcoming_games()
 
+    def remove_game(self, team_name: str, opponent: str, datetime_str: str):
+        """
+        Removes a game from the cached schedule.
+        A game is matched by team, opponent, and datetime.
+
+        Returns True if a game was removed, False otherwise.
+        """
+
+        if not self.schedule_cache.exists():
+            logger.error("No schedule cache found.")
+            return False
+
+        with open(self.schedule_cache, "r") as f:
+            data = json.load(f)
+
+        games = data.get("games", [])
+        new_games = [
+            game for game in games
+            if not (
+                    game.get("team") == team_name
+                    and game.get("opponent") == opponent
+                    and game.get("datetime") == datetime_str
+            )
+        ]
+
+        removed = len(new_games) != len(games)
+
+        if not removed:
+            logger.info("No matching game found to remove.")
+            return False
+
+        data["games"] = new_games
+        data["game_count"] = len(new_games)
+        data["updated_at"] = datetime.now().isoformat()
+        data["status"] = "edited"
+
+        self._save_schedule_cache(data)
+
+        logger.info(f"Removed game: {team_name} vs {opponent} @ {datetime_str}")
+        logger.info(f"{len(new_games)} games remain in the schedule.")
+
+        return True
 
 if __name__ == "__main__":
     import sys

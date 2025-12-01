@@ -91,6 +91,7 @@ def main():
                     video_service.clip_goal(file_name, goal_file_name, (timestamp - 30),30)
 
             video_service.delete_video(file_name)
+            schedule_reader.remove_game(game['team'], game['opponent'], game['datetime'])
 
     except Exception as e:
         logging.error(f"An error occurred: {e}")

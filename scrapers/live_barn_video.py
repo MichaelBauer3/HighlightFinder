@@ -59,7 +59,7 @@ class LiveBarnVideo:
             field = game_data['field']
             game_time = game_data['time']
             day = game_data['game_day']
-            month_year = game_data['game_month_year']
+            month_year = game_data['game_month_and_year']
             logger.info(f"Selecting Field: {field}")
             self._select_field_vod(field, game_time, day, month_year)
 
