@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
@@ -156,14 +157,9 @@ class LiveBarnVideo:
             month_and_year: month and year of the game
         """
         try:
-            month_selected = self.wait.until(
-                ec.presence_of_element_located(
-                    (By.XPATH, f"//span[contains(text(), '{month_and_year}')]")
-                )
-            ).text.strip()
-
-            if month_selected != month_and_year:
-                self._get_previous_month(month_and_year)
+            month_and_year_selected = datetime.now().strftime("%B %Y")
+            if month_and_year_selected != month_and_year:
+                self._get_previous_month()
 
             day_button = self.wait.until(
                 ec.element_to_be_clickable(
@@ -196,22 +192,18 @@ class LiveBarnVideo:
             logger.error(f"Could not select VOD game on {month_and_year} {day} at {game_time}: {e}")
             raise
 
-    def _get_previous_month(self, month_and_year: str):
+    def _get_previous_month(self):
         """
-        Get the previous month given the current month
-
-        Args:
-            month_and_year: current month as a string (e.g., "January 2025")
+        Get the previous month
 
         Returns:
             previous True if moved back a month, False otherwise
         """
         try:
-            prev_button_xpath = "//button[.//svg[@data-testid='ArrowLeftIcon']]"
-
             prev_button = self.wait.until(
                 ec.element_to_be_clickable(
-                    (By.XPATH, prev_button_xpath)
+                    (By.CSS_SELECTOR, "button:has([data-testid='ArrowLeftIcon'])")
+
                 )
             )
             prev_button.click()
