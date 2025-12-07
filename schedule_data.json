@@ -1,25 +1,8 @@
 {
-  "updated_at": "2025-12-04T13:08:41.428447",
+  "updated_at": "2025-12-07T17:23:14.328657",
   "fetched_by": "github-actions",
-  "games": [
-    {
-      "team": "ewoks fc",
-      "opponent": "sugandefe fc",
-      "datetime": "2025-12-04T22:00:00",
-      "date": "2025-12-04",
-      "time": "10:00",
-      "day_of_week": "Thursday",
-      "field": "East Field",
-      "location": "Rochester Sports Garden: East Field",
-      "is_home": false,
-      "display_time": "10:00pm - 10:50pm",
-      "game_year": "2025",
-      "game_month": "12",
-      "game_day": "4",
-      "game_month_and_year": "December 2025"
-    }
-  ],
+  "games": [],
   "status": "success",
   "team_count": 2,
-  "game_count": 1
+  "game_count": 0
 }
