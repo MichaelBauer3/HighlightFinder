@@ -1,8 +1,41 @@
 {
-  "updated_at": "2025-12-07T17:23:14.328657",
+  "updated_at": "2025-12-14T17:24:38.087800",
   "fetched_by": "github-actions",
-  "games": [],
+  "games": [
+    {
+      "team": "ewoks fc",
+      "opponent": "brighton barons",
+      "datetime": "2025-12-18T18:30:00",
+      "date": "2025-12-18",
+      "time": "06:30",
+      "day_of_week": "Thursday",
+      "field": "West Field",
+      "location": "Rochester Sports Garden: West Field",
+      "is_home": false,
+      "display_time": "6:30pm - 7:20pm",
+      "game_year": "2025",
+      "game_month": "12",
+      "game_day": "18",
+      "game_month_and_year": "December 2025"
+    },
+    {
+      "team": "ewoks fc",
+      "opponent": "cougars",
+      "datetime": "2025-12-18T19:30:00",
+      "date": "2025-12-18",
+      "time": "07:30",
+      "day_of_week": "Thursday",
+      "field": "West Field",
+      "location": "Rochester Sports Garden: West Field",
+      "is_home": true,
+      "display_time": "7:30pm - 8:20pm",
+      "game_year": "2025",
+      "game_month": "12",
+      "game_day": "18",
+      "game_month_and_year": "December 2025"
+    }
+  ],
   "status": "success",
   "team_count": 2,
-  "game_count": 0
+  "game_count": 2
 }
