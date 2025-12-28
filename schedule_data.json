@@ -1,8 +1,25 @@
 {
-  "updated_at": "2025-12-21T17:23:30.294549",
+  "updated_at": "2025-12-28T17:24:52.919365",
   "fetched_by": "github-actions",
-  "games": [],
+  "games": [
+    {
+      "team": "ewoks fc",
+      "opponent": "loyal boys",
+      "datetime": "2026-01-01T19:00:00",
+      "date": "2026-01-01",
+      "time": "07:00",
+      "day_of_week": "Thursday",
+      "field": "East Field",
+      "location": "Rochester Sports Garden: East Field",
+      "is_home": true,
+      "display_time": "7:00pm - 7:50pm",
+      "game_year": "2026",
+      "game_month": "01",
+      "game_day": "1",
+      "game_month_and_year": "January 2026"
+    }
+  ],
   "status": "success",
   "team_count": 2,
-  "game_count": 0
+  "game_count": 1
 }
