@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-01-16T16:08:20.429019",
+  "updated_at": "2026-01-18T17:25:38.440929",
   "fetched_by": "github-actions",
   "games": [
     {
       "team": "ewoks fc",
       "opponent": "washed fc",
-      "datetime": "2026-01-15T20:00:00",
-      "date": "2026-01-15",
-      "time": "07:00",
-      "day_of_week": "Thursday",
+      "datetime": "2026-01-20T20:00:00",
+      "date": "2026-01-20",
+      "time": "08:00",
+      "day_of_week": "Tuesday",
       "field": "East Field",
       "location": "Rochester Sports Garden: East Field",
       "is_home": true,
-      "display_time": "7:00pm - 7:50pm",
+      "display_time": "8:00pm - 8:50pm",
       "game_year": "2026",
       "game_month": "01",
-      "game_day": "15",
+      "game_day": "20",
       "game_month_and_year": "January 2026"
     },
     {
