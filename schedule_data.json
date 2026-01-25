@@ -1,41 +1,25 @@
 {
-  "updated_at": "2026-01-18T17:25:38.440929",
+  "updated_at": "2026-01-25T17:26:22.444067",
   "fetched_by": "github-actions",
   "games": [
     {
       "team": "ewoks fc",
-      "opponent": "washed fc",
-      "datetime": "2026-01-20T20:00:00",
-      "date": "2026-01-20",
-      "time": "08:00",
-      "day_of_week": "Tuesday",
-      "field": "East Field",
-      "location": "Rochester Sports Garden: East Field",
-      "is_home": true,
-      "display_time": "8:00pm - 8:50pm",
-      "game_year": "2026",
-      "game_month": "01",
-      "game_day": "20",
-      "game_month_and_year": "January 2026"
-    },
-    {
-      "team": "ewoks fc",
-      "opponent": "lint",
-      "datetime": "2026-01-22T23:00:00",
-      "date": "2026-01-22",
-      "time": "11:00",
+      "opponent": "sugandefe fc",
+      "datetime": "2026-01-29T18:30:00",
+      "date": "2026-01-29",
+      "time": "06:30",
       "day_of_week": "Thursday",
-      "field": "East Field",
-      "location": "Rochester Sports Garden: East Field",
-      "is_home": false,
-      "display_time": "11:00pm - 11:50pm",
+      "field": "West Field",
+      "location": "Rochester Sports Garden: West Field",
+      "is_home": true,
+      "display_time": "6:30pm - 7:10pm",
       "game_year": "2026",
       "game_month": "01",
-      "game_day": "22",
+      "game_day": "29",
       "game_month_and_year": "January 2026"
     }
   ],
   "status": "success",
   "team_count": 2,
-  "game_count": 2
+  "game_count": 1
 }
