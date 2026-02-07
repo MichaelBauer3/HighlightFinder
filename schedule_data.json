@@ -5,18 +5,18 @@
     {
       "team": "ewoks fc",
       "opponent": "sugandefe fc",
-      "datetime": "2026-01-29T18:30:00",
-      "date": "2026-01-29",
-      "time": "06:30",
+      "datetime": "2026-02-05T21:00:00",
+      "date": "2026-02-05",
+      "time": "09:00",
       "day_of_week": "Thursday",
-      "field": "West Field",
+      "field": "East Field",
       "location": "Rochester Sports Garden: West Field",
       "is_home": true,
-      "display_time": "6:30pm - 7:10pm",
+      "display_time": "9:00pm - 9:50pm",
       "game_year": "2026",
-      "game_month": "01",
-      "game_day": "29",
-      "game_month_and_year": "January 2026"
+      "game_month": "02",
+      "game_day": "05",
+      "game_month_and_year": "February 2026"
     }
   ],
   "status": "success",
