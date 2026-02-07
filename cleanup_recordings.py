@@ -8,7 +8,7 @@ def main():
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     )
 
-    recordings_dir = Path("data/recordings")
+    recordings_dir = Path("jobs/data/recordings")
 
     # Only delete recordings older than 7 days
     cutoff_time = datetime.now() - timedelta(days=7)

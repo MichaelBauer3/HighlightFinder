@@ -1,6 +1,5 @@
 import logging
 import time
-from datetime import datetime
 
 from selenium.common import TimeoutException
 
@@ -26,22 +25,6 @@ def main():
         logging.info("No games scheduled")
         return
 
-    now = datetime.now()
-    games_to_record = []
-
-    for game in games:
-        game_time = datetime.fromisoformat(game['datetime'])
-
-        # Assume 60 min game + 20 min buffer = record 1-2 hours after start
-        time_since_game = (now - game_time).total_seconds() / 4800
-
-        if 1 <= time_since_game <= 2:  # Game ended 1-2 hours ago
-            games_to_record.append(game)
-
-    if not games_to_record:
-        logging.info("No games ready to record")
-        return
-
     driver = DriverManager.create_driver()
 
     try:
@@ -62,7 +45,7 @@ def main():
             video_loader,
             score_validator)
 
-        for game in games_to_record:
+        for game in games:
             team_name = game['team'].lower().replace(' ', '_')
             game_date = game['date'].replace('-', '')
             file_name = f"{team_name}_{game_date}.mp4"

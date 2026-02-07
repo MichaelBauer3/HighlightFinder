@@ -1,6 +1,5 @@
 import logging
 from pathlib import Path
-from datetime import datetime, timedelta
 from schedule_reader import ScheduleReader
 from config import FIELD_CONFIGS
 from video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
@@ -17,25 +16,9 @@ def main():
     schedule_reader = ScheduleReader()
     games = schedule_reader.fetch_schedule_from_github()
 
-    recordings_dir = Path("data/recordings")
-    clips_dir = Path("data/clips")
+    recordings_dir = Path("jobs/data/recordings")
+    clips_dir = Path("jobs/data/clips")
     clips_dir.mkdir(parents=True, exist_ok=True)
-
-    # Find games from the last 24 hours that need processing
-    now = datetime.now()
-    games_to_process = []
-
-    for game in games:
-        game_time = datetime.fromisoformat(game['datetime'])
-        hours_since_game = (now - game_time).total_seconds() / 3600
-
-        # Process games that happened 3-24 hours ago
-        if 3 <= hours_since_game <= 24:
-            games_to_process.append(game)
-
-    if not games_to_process:
-        logging.info("No games ready to process")
-        return
 
     scoreboard_finder = ScoreboardFinder()
     scoreboard_reader = ScoreboardReader()
@@ -51,7 +34,7 @@ def main():
         score_validator
     )
 
-    for game in games_to_process:
+    for game in games:
         team_name = game['team'].lower().replace(' ', '_')
         game_date = game['date'].replace('-', '')
         file_name = f"{team_name}_{game_date}.mp4"
