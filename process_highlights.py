@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 from schedule_reader import ScheduleReader
-from config import FIELD_CONFIGS
+from config import FIELD_CONFIGS, CLIPS_DIR, RECORDINGS_DIR
 from video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
 from video.scoreboard_finder import ScoreboardFinder
 from services.video_service import VideoService
@@ -15,10 +15,6 @@ def main():
 
     schedule_reader = ScheduleReader()
     games = schedule_reader.fetch_schedule_from_github()
-
-    recordings_dir = Path("jobs/data/recordings")
-    clips_dir = Path("jobs/data/clips")
-    clips_dir.mkdir(parents=True, exist_ok=True)
 
     scoreboard_finder = ScoreboardFinder()
     scoreboard_reader = ScoreboardReader()
@@ -38,7 +34,7 @@ def main():
         team_name = game['team'].lower().replace(' ', '_')
         game_date = game['date'].replace('-', '')
         file_name = f"{team_name}_{game_date}.mp4"
-        file_path = recordings_dir / file_name
+        file_path = RECORDINGS_DIR / file_name
 
         # Check if recording exists
         if not file_path.exists():
@@ -46,7 +42,7 @@ def main():
             continue
 
         # Check if already processed
-        existing_goals = list(clips_dir.glob(f"goal_*_{team_name}_{game_date}_*.mp4"))
+        existing_goals = list(CLIPS_DIR.glob(f"goal_*_{team_name}_{game_date}_*.mp4"))
         if existing_goals:
             logging.info(f"Already processed: {file_name}, skipping")
             # Clean up original recording

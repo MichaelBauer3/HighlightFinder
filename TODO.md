@@ -10,3 +10,9 @@
 ## Categories
 1. Scoreboard Enhancements (3, 4, 5)
 2. QOL (1, 2, 6, 7)
+
+### Prioritized
+1. Fix the scoreboard region for the new computer
+2. Add scheduling to run automatically
+3. Make sure that the clip files are small enough to be sent while maintaining their quality
+4. Add Messaging to the gc
