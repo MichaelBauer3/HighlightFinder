@@ -2,19 +2,14 @@ import logging
 import os
 import signal
 import subprocess
-from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
 class ScreenRecorder:
-    def __init__(self, output_dir="data/recordings"):
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=True, exist_ok=True)
+    def __init__(self):
         self.proc = None
 
-    def record_for_duration(self, name, duration, fps=60):
-        output = self.output_dir / f"{name}.mp4"
-
+    def record_for_duration(self, recording_path, duration, fps=60):
         cmd = [
             "ffmpeg",
             "-y",
@@ -29,7 +24,7 @@ class ScreenRecorder:
             "-pix_fmt", "yuv420p",
             "-movflags", "+faststart",
 
-            str(output)
+            str(recording_path)
         ]
 
         self.proc = subprocess.Popen(
@@ -44,4 +39,4 @@ class ScreenRecorder:
         except subprocess.TimeoutExpired:
             os.killpg(self.proc.pid, signal.SIGTERM)
 
-        return output.exists()
+        return recording_path.exists()

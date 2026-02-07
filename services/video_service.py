@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from numpy import ndarray
 
@@ -19,8 +20,8 @@ class VideoService:
         self.video_loader = video_loader
         self.score_validator = score_validator
 
-    def screen_record_for_duration(self, team_name: str, duration_seconds: int) -> bool:
-        return self.screen_recorder.record_for_duration(team_name, duration_seconds, 30)
+    def screen_record_for_duration(self, recording_path: Path, duration_seconds: int) -> bool:
+        return self.screen_recorder.record_for_duration(recording_path, duration_seconds, 30)
 
     def stream_frames(self, file_name: str, sample_rate: int = 3):
         return self.video_loader.frames_generator(file_name, sample_rate)

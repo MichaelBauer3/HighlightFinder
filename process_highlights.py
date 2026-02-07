@@ -51,8 +51,6 @@ def main():
             logging.info(f"Already processed: {file_name}, skipping")
             # Clean up original recording
             video_service.delete_video(file_name)
-            # Remove from schedule
-            schedule_reader.remove_game(game['team'], game['opponent'], game['datetime'])
             continue
 
         logging.info(f"Processing video: {file_name}")
@@ -89,9 +87,6 @@ def main():
 
             # Delete original recording after successful processing
             video_service.delete_video(file_name)
-
-            # Remove from schedule
-            schedule_reader.remove_game(game['team'], game['opponent'], game['datetime'])
 
         except Exception as e:
             logging.error(f"Failed to process {file_name}: {e}")

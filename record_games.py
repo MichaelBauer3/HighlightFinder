@@ -5,7 +5,7 @@ from selenium.common import TimeoutException
 
 from schedule_reader import ScheduleReader
 from scrapers import LiveBarnAuth, LiveBarnVideo
-from config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD
+from config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, RECORDINGS_DIR
 from scrapers.driver_manager import DriverManager
 from services.live_barn_service import LiveBarnService
 from services.video_service import VideoService
@@ -51,7 +51,7 @@ def main():
             file_name = f"{team_name}_{game_date}.mp4"
 
             # Check if already recorded
-            recording_path = screen_recorder.output_dir / file_name
+            recording_path = RECORDINGS_DIR / file_name
             if recording_path.exists():
                 logging.info(f"Recording already exists: {file_name}, skipping")
                 continue
@@ -68,7 +68,7 @@ def main():
 
                 # Record the game (Adjust 60 to N for N minutes)
                 duration = 60 * 60
-                success = video_service.screen_record_for_duration(team_name, duration)
+                success = video_service.screen_record_for_duration(recording_path, duration)
 
                 if success:
                     logging.info(f"Successfully recorded: {file_name}")
