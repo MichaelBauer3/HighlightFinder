@@ -1,0 +1,117 @@
+import logging
+from pathlib import Path
+from datetime import datetime, timedelta
+from schedule_reader import ScheduleReader
+from config import FIELD_CONFIGS
+from video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
+from video.scoreboard_finder import ScoreboardFinder
+from services.video_service import VideoService
+
+
+def main():
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+
+    schedule_reader = ScheduleReader()
+    games = schedule_reader.fetch_schedule_from_github()
+
+    recordings_dir = Path("data/recordings")
+    clips_dir = Path("data/clips")
+    clips_dir.mkdir(parents=True, exist_ok=True)
+
+    # Find games from the last 24 hours that need processing
+    now = datetime.now()
+    games_to_process = []
+
+    for game in games:
+        game_time = datetime.fromisoformat(game['datetime'])
+        hours_since_game = (now - game_time).total_seconds() / 3600
+
+        # Process games that happened 3-24 hours ago
+        if 3 <= hours_since_game <= 24:
+            games_to_process.append(game)
+
+    if not games_to_process:
+        logging.info("No games ready to process")
+        return
+
+    scoreboard_finder = ScoreboardFinder()
+    scoreboard_reader = ScoreboardReader()
+    video_loader = VideoLoader()
+    score_validator = ScoreValidator()
+    screen_recorder = ScreenRecorder()
+
+    video_service = VideoService(
+        scoreboard_finder,
+        scoreboard_reader,
+        screen_recorder,
+        video_loader,
+        score_validator
+    )
+
+    for game in games_to_process:
+        team_name = game['team'].lower().replace(' ', '_')
+        game_date = game['date'].replace('-', '')
+        file_name = f"{team_name}_{game_date}.mp4"
+        file_path = recordings_dir / file_name
+
+        # Check if recording exists
+        if not file_path.exists():
+            logging.warning(f"Recording not found: {file_name}, skipping")
+            continue
+
+        # Check if already processed
+        existing_goals = list(clips_dir.glob(f"goal_*_{team_name}_{game_date}_*.mp4"))
+        if existing_goals:
+            logging.info(f"Already processed: {file_name}, skipping")
+            # Clean up original recording
+            video_service.delete_video(file_name)
+            # Remove from schedule
+            schedule_reader.remove_game(game['team'], game['opponent'], game['datetime'])
+            continue
+
+        logging.info(f"Processing video: {file_name}")
+
+        # Get field configuration
+        field = FIELD_CONFIGS[game['field']]
+        rotation_angle = field['rotation_angle']
+        is_home = game['is_home']
+        config = field['home_score_region'] if is_home else field['away_score_region']
+
+        # Process video
+        sample_rate = 1
+        goals_found = 0
+
+        try:
+            for timestamp, frame in video_service.stream_frames(file_name, sample_rate):
+                # Process frame
+                score_processed = video_service.process_to_digit(frame, config, rotation_angle)
+
+                # Get score from model
+                score = video_service.get_score(score_processed)
+
+                # Validate score
+                is_valid_score = video_service.validate_score(score)
+
+                # If valid, clip and save
+                if is_valid_score:
+                    goal_file_name = f"goal_{score}_{team_name}_{game_date}_{goals_found}.mp4"
+                    video_service.clip_goal(file_name, goal_file_name, timestamp - 30, 30)
+                    goals_found += 1
+                    logging.info(f"Found goal {goals_found}: {score}")
+
+            logging.info(f"Processing complete: {file_name}, found {goals_found} goals")
+
+            # Delete original recording after successful processing
+            video_service.delete_video(file_name)
+
+            # Remove from schedule
+            schedule_reader.remove_game(game['team'], game['opponent'], game['datetime'])
+
+        except Exception as e:
+            logging.error(f"Failed to process {file_name}: {e}")
+
+if __name__ == "__main__":
+    main()

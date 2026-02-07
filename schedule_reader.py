@@ -7,20 +7,29 @@ from datetime import datetime
 from pathlib import Path
 import sys
 
+from config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+if SCRIPT_DIR.name == "jobs":
+    PROJECT_ROOT = SCRIPT_DIR.parent
+else:
+    PROJECT_ROOT = SCRIPT_DIR
+
+# Ensure logs directory exists
+LOGS_DIR = PROJECT_ROOT / 'logs'
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('logs/laptop_scheduler.log'),
+        logging.FileHandler(LOGS_DIR / 'laptop_scheduler.log'),
         logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger(__name__)
 
-from config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH
-
 SCHEDULE_URL = f"https://raw.githubusercontent.com/{GITHUB_USERNAME}/{GITHUB_REPO}/{GITHUB_BRANCH}/schedule_data.json"
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class ScheduleReader:
     """Manages game recordings based on GitHub schedule"""

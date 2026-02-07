@@ -5,6 +5,7 @@ from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.common.action_chains import ActionChains
 import logging
 
 logger = logging.getLogger(__name__)
@@ -156,6 +157,7 @@ class LiveBarnVideo:
             day: day of the game
             month_and_year: month and year of the game
         """
+        month = month_and_year.split(' ')[0]
         try:
             month_and_year_selected = datetime.now().strftime("%B %Y")
             if month_and_year_selected != month_and_year:
@@ -163,7 +165,7 @@ class LiveBarnVideo:
 
             day_button = self.wait.until(
                 ec.element_to_be_clickable(
-                    (By.XPATH, f"//span[text()='{day}' and ancestor::div[.//span[text()='{month_and_year}']]]")
+                    (By.XPATH, f"//div[.//span[text()='{month_and_year}'] and .//span[text()='Sun'] and .//span[text()='Sat']]//div[span[text()='{day}']]")
                 )
             )
             day_button.click()
@@ -184,12 +186,12 @@ class LiveBarnVideo:
             )
             watch_button.click()
             time.sleep(3)
-            logger.info(f"Selected VOD game on {month_and_year} {day} at {game_time}")
+            logger.info(f"Selected VOD game on {month} {day} at {game_time}")
 
             self._select_fullscreen_pano()
 
         except Exception as e:
-            logger.error(f"Could not select VOD game on {month_and_year} {day} at {game_time}: {e}")
+            logger.error(f"Could not select VOD game on {month} {day} at {game_time}: {e}")
             raise
 
     def _get_previous_month(self):
@@ -203,7 +205,6 @@ class LiveBarnVideo:
             prev_button = self.wait.until(
                 ec.element_to_be_clickable(
                     (By.CSS_SELECTOR, "button:has([data-testid='ArrowLeftIcon'])")
-
                 )
             )
             prev_button.click()
@@ -219,22 +220,46 @@ class LiveBarnVideo:
         Select the fullscreen and panoramic view
         """
         try:
-            pano_button = self.wait.until(
-                ec.element_to_be_clickable(
-                    (By.XPATH, "//button[@aria-label='Panoramic']")
-                )
-            )
-            pano_button.click()
+            self._click_player_button("Panoramic")
             logger.info("Watching in Panorama")
 
-            fullscreen_button = self.wait.until(
-                ec.element_to_be_clickable(
-                    (By.XPATH, "//button[@type='button' and @aria-label='Fullscreen']")
-                )
-            )
-            fullscreen_button.click()
+            self._click_player_button("Fullscreen")
             logger.info("Watching in Fullscreen")
 
         except Exception as e:
             logger.error(f"Could not select fullscreen or panoramic view: {e}")
             raise
+
+    def _activate_player_controls(self):
+        player = self.wait.until(
+            ec.presence_of_element_located((By.TAG_NAME, "video"))
+        )
+
+        ActionChains(self.driver)\
+            .move_to_element(player)\
+            .move_by_offset(10, 10)\
+            .move_by_offset(-5, -5)\
+            .perform()
+
+    def _wait_until_interactive(self, label):
+        return self.wait.until(
+            lambda d: next(
+                (
+                    b for b in d.find_elements(By.XPATH, f"//button[@aria-label='{label}']")
+                    if b.is_displayed()
+                       and d.execute_script(
+                    "return getComputedStyle(arguments[0]).pointerEvents",
+                    b
+                ) != "none"
+                ),
+                False
+            )
+        )
+
+    def _click_player_button(self, label):
+        self._activate_player_controls()
+
+        button = self._wait_until_interactive(label)
+
+        self.driver.execute_script("arguments[0].click();", button)
+
