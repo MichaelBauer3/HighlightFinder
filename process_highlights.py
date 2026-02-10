@@ -54,7 +54,7 @@ def main():
         # Get field configuration
         field = FIELD_CONFIGS[game['field']]
         rotation_angle = field['rotation_angle']
-        is_home = game['is_home']
+        is_home = False
         config = field['home_score_region'] if is_home else field['away_score_region']
 
         # Process video

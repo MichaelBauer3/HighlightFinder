@@ -39,7 +39,6 @@ def test_random_samples(model, dataset_root="../dataset_digits", num_samples=10,
         # Load and preprocess
         img = tf.keras.utils.load_img(img_path, color_mode="grayscale", target_size=(28, 28))
         arr = tf.keras.utils.img_to_array(img)
-        arr = arr / 255.0
         arr = np.expand_dims(arr, axis=0)
 
         pred = np.argmax(model.predict(arr, verbose=0))

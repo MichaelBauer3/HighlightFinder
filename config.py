@@ -34,35 +34,35 @@ TEAMS = ["ewoks fc", "ewoks united"]
 
 FIELD_CONFIGS = {
     "West Field": {
-        "name": "West Field (Top Right)",
+        "name": "West Field (Top Left)",
         "home_score_region": {
-            "x": 2397,
-            "y": 732,
-            "width": 12,
-            "height": 11
+            "x": 1563,
+            "y": 432,
+            "width": 9,
+            "height": 8
         },
         "away_score_region": {
-            "x": 2450,
-            "y": 736,
-            "width": 12,
-            "height": 11
+            "x": 1598,
+            "y":435,
+            "width": 9,
+            "height": 8
         },
         "zoom_factor": 4.0,
         "rotation_angle": 30,
     },
     "East Field": {
-        "name": "East Field (Top Left)",
+        "name": "East Field (Top Right)",
         "home_score_region": {
-            "x": 1050,
-            "y": 599,
-            "width": 14,
-            "height": 11
+            "x": 665,
+            "y": 353,
+            "width": 8,
+            "height": 7
         },
         "away_score_region": {
-            "x": 1104,
-            "y": 600,
-            "width": 14,
-            "height": 11
+            "x": 702,
+            "y": 353,
+            "width": 7,
+            "height": 7
         },
         "zoom_factor": 3.0,
         "rotation_angle": -30,
@@ -78,11 +78,12 @@ VIDEO_WIDTH = 1920
 VIDEO_HEIGHT = 1080
 
 # Paths
-DATA_DIR = Path("data")
+ROOT_DIR = Path(SCRIPT_DIR)
+DATA_DIR = ROOT_DIR / "data"
 RECORDINGS_DIR = DATA_DIR / "recordings"
 CLIPS_DIR = DATA_DIR / "clips"
 METADATA_DIR = DATA_DIR / "metadata"
-LOGS_DIR = Path("logs")
+LOGS_DIR = ROOT_DIR / "logs"
 
 for directory in [RECORDINGS_DIR, CLIPS_DIR, METADATA_DIR, LOGS_DIR]:
     directory.mkdir(parents=True, exist_ok=True)

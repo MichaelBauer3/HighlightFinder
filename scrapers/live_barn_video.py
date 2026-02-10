@@ -127,25 +127,20 @@ class LiveBarnVideo:
         """
 
         try:
-            self.wait.until(
-                ec.presence_of_element_located(
-                    (By.XPATH, f"//*[contains(text(), '{field_name}')]")
-                )
-            )
+            rows = self.driver.find_elements(By.XPATH, f"//tr[.//span[normalize-space()='{field_name}']]")
+            row = rows[-1]  # Get the last (most specific) match
 
-            vod_button = self.wait.until(
-                ec.element_to_be_clickable(
-                    (By.XPATH, f"//a[.//text()[contains(., 'VOD')]]")
-                )
-            )
+            vod_button = row.find_element(By.XPATH, ".//a[.//*[name()='svg']//*[name()='text'][@id='VOD']]")
+
             vod_button.click()
+
             logger.info(f"Selected VOD for field: {field_name} on {month_and_year} {day} at {game_time}")
             time.sleep(3)
 
             self._select_vod_game(game_time, day, month_and_year)
 
         except Exception as e:
-            logger.error(f"Could not select VOD field {field_name}: {e}")
+            logger.error(f"Could not select VOD for {field_name}: {e}")
             raise
 
     def _select_vod_game(self, game_time: str, day: str, month_and_year: str):

@@ -28,38 +28,38 @@ class ScoreboardFinder:
         x, y, w, h = region_config['x'], region_config['y'], region_config['width'], region_config['height']
         region = frame_rotated_array[y:y+h, x:x+w].copy()
 
-        region_rgb = cv2.cvtColor(region, cv2.COLOR_BGR2RGB)
+        """region_rgb = cv2.cvtColor(region, cv2.COLOR_BGR2RGB)
         pli_img = Image.fromarray(region_rgb)
 
         scale_factor = 4
         new_size = (w * scale_factor, h * scale_factor)
         pli_img = pli_img.resize(new_size, Image.Resampling.LANCZOS)
 
-        pli_img_array = np.array(pli_img)
+        pli_img_array = np.array(pli_img)"""
+        gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY)
 
-        gray = cv2.cvtColor(pli_img_array, cv2.COLOR_RGB2GRAY)
-        denoised = cv2.fastNlMeansDenoising(gray, h=10)
-        clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(4, 4))
-        enhanced = clahe.apply(denoised)
-        kernel_sharpen = np.array([[-1, -1, -1],
-                                   [-1, 9, -1],
-                                   [-1, -1, -1]])
-        sharpened = cv2.filter2D(enhanced, -1, kernel_sharpen)
+        """        # 2. Invert if the text is darker than the background
+        # Scoreboards are often light-on-dark, but your crop looks dark-on-light.
+        # We want white numbers on a black background.
+        if np.mean(gray) > 127:
+            gray = cv2.bitwise_not(gray)"""
+
+        # 3. High-Contrast Stretch
+        # This forces the '7' to become bright white
+        gray = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
+
+        # 4. Sharp Scale up
+        upscaled = cv2.resize(gray, (0, 0), fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
+
+        # 5. Clean the edges (Crucial for image_97b3e4.png)
+        # We'll apply a slight threshold to kill the 'gray' noise in the background
+        _, cleaned = cv2.threshold(upscaled, 155, 255, cv2.THRESH_TOZERO)
+
+        # 6. Add Padding & Final Resize
+        pad = 10
+        padded = cv2.copyMakeBorder(cleaned, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=[0])
+        final_28x28 = cv2.resize(padded, (28, 28), interpolation=cv2.INTER_AREA)
+
+        return final_28x28.astype('float32') / 255.0
 
 
-        _, binary = cv2.threshold(sharpened, 0, 255,
-                                  cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-        if np.mean(binary) < 127:
-            binary = cv2.bitwise_not(binary)
-
-        kernel = np.ones((2, 2), np.uint8)
-        cleaned = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
-
-        kernel_close = np.ones((3, 3), np.uint8)
-        closed = cv2.morphologyEx(cleaned, cv2.MORPH_CLOSE, kernel_close, iterations=2)
-
-        kernel_dilate = np.ones((2, 2), np.uint8)
-        dilated = cv2.dilate(closed, kernel_dilate, iterations=1)
-
-        return dilated
