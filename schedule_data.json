@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-01-25T17:26:22.444067",
+  "updated_at": "2026-02-11T02:42:34.219476",
   "fetched_by": "github-actions",
   "games": [
     {
       "team": "ewoks fc",
-      "opponent": "sugandefe fc",
-      "datetime": "2026-02-05T21:00:00",
-      "date": "2026-02-05",
-      "time": "09:00",
+      "opponent": "cougars",
+      "datetime": "2026-02-12T18:30:00",
+      "date": "2026-02-12",
+      "time": "06:30",
       "day_of_week": "Thursday",
-      "field": "East Field",
-      "location": "Rochester Sports Garden: East Field",
+      "field": "West Field",
+      "location": "Rochester Sports Garden: West Field",
       "is_home": false,
-      "display_time": "9:00pm - 9:50pm",
+      "display_time": "6:30pm - 7:20pm",
       "game_year": "2026",
       "game_month": "02",
-      "game_day": "5",
+      "game_day": "12",
       "game_month_and_year": "February 2026"
     }
   ],
