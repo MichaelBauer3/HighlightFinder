@@ -1,5 +1,5 @@
 # TODO - Not prioritized
-1. Add automatic messaging that sends to messenger gc
+1. Add automatic messaging that sends files and alerts of status to messenger gc
 2. Add scheduling using CRON to run these jobs automatically with as close to 0 monitoring
 3. Consider adding a way to not start screen recording until the scoreboard reads 0 - 0 and 25:00 or 18:00?
 4. Ensure that the score model can handle double digits
@@ -12,7 +12,6 @@
 2. QOL (1, 2, 6, 7)
 
 ### Prioritized
-1. Fix the scoreboard region for the new computer
-2. Add scheduling to run automatically
-3. Make sure that the clip files are small enough to be sent while maintaining their quality
-4. Add Messaging to the gc
+1. Add scheduling to run automatically
+2. Make sure that the clip files are small enough to be sent while maintaining their quality
+3. Add Messaging to the gc
