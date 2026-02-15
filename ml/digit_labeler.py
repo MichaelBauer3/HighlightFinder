@@ -6,15 +6,15 @@ import time
 
 from video import VideoLoader
 from video.scoreboard_finder import ScoreboardFinder
-from config import FIELD_CONFIGS
+from config import FIELD_CONFIGS, METADATA_DIR
 
 ROOT_DIR = Path(__file__).parent.parent
-VIDEO_PATH = ROOT_DIR / "data/recordings/West_Field_Demo.mp4"
-FIELD = "West Field"
+VIDEO_PATH = ROOT_DIR / "data/recordings/blank_scoreboard.mp4"
+FIELD = "East Field"
 
 # Get both regions
-HOME_REGION = FIELD_CONFIGS[FIELD]["home_score_region"]
-AWAY_REGION = FIELD_CONFIGS[FIELD]["away_score_region"]
+HOME_REGION = FIELD_CONFIGS[FIELD]["scoreboard_region"]["home_score_region"]
+AWAY_REGION = FIELD_CONFIGS[FIELD]["scoreboard_region"]["away_score_region"]
 ROTATION = FIELD_CONFIGS[FIELD]['rotation_angle']
 
 # Output dir
@@ -25,6 +25,12 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 def main():
     video = VideoLoader()
     finder = ScoreboardFinder()
+
+    template = METADATA_DIR / FIELD_CONFIGS[FIELD]['template_path']
+    finder.set_template(template)
+
+    field = FIELD_CONFIGS[FIELD]
+    config = field['scoreboard_region']
 
     print("\nExtracting digit frames...")
     print(f"Saving to: {OUTPUT_DIR}\n")
@@ -41,7 +47,8 @@ def main():
         }
 
         for team, region in regions.items():
-            digit_img = finder.preprocess_scoreboard_region(frame, region, ROTATION)
+
+            digit_img = finder.preprocess_scoreboard_region(frame, config, ROTATION, region)
 
             if digit_img is None or digit_img.size == 0:
                 print(f"Skipping empty {team} ROI on frame {frame_index}")

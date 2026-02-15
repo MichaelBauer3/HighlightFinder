@@ -67,7 +67,7 @@ def main():
                 time.sleep(10)
 
                 # Record the game (Adjust 60 to N for N minutes)
-                duration = 60 * 60
+                duration = 55 * 60
                 success = video_service.screen_record_for_duration(recording_path, duration)
 
                 if success:
@@ -80,7 +80,7 @@ def main():
             finally:
                 try:
                     live_barn_service.logout()
-                except TimeoutException as e:
+                except TimeoutException:
                     pass
 
     except Exception as e:

@@ -1,7 +1,6 @@
 import logging
 from pathlib import Path
 
-import cv2
 import keras
 import numpy as np
 
@@ -15,15 +14,18 @@ class ScoreboardReader:
 
     @staticmethod
     def _prepare_digit(img):
-        if len(img.shape) == 3:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        """
+        Prepare preprocessed digit for model prediction
 
-        resized = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-        arr = resized.astype("float32") / 255.0
-        arr = np.expand_dims(arr, axis=-1)
-        arr = np.expand_dims(arr, axis=0)
+        :param img: Already preprocessed 28x28 normalized image from preprocess_scoreboard_region
+        :return: Batch-ready array with shape (1, 28, 28, 1)
+        """
+        if len(img.shape) == 2:
+            img = np.expand_dims(img, axis=-1)
 
-        return arr
+        img = np.expand_dims(img, axis=0)
+
+        return img
 
     def get_scores(self, home_img, away_img):
         home_arr, away_arr = self._prepare_digit(home_img), self._prepare_digit(away_img)
@@ -32,5 +34,10 @@ class ScoreboardReader:
                 np.argmax(self.model.predict(away_arr, verbose=0)))
 
     def get_score(self, img):
+        """
+            :param img: Preprocessed 28x28 normalized image from preprocess_scoreboard_region
+            :return: Digit 0-9, or -1 for blank
+            """
+
         img_arr = self._prepare_digit(img)
         return np.argmax(self.model.predict(img_arr, verbose=0))

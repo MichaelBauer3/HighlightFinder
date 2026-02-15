@@ -26,8 +26,8 @@ class VideoService:
     def stream_frames(self, file_name: str, sample_rate: int = 3):
         return self.video_loader.frames_generator(file_name, sample_rate)
 
-    def process_to_digit(self, frame: ndarray, region_config: dict, rotation_angle: int) -> ndarray:
-        return self.scoreboard_finder.preprocess_scoreboard_region(frame, region_config, rotation_angle)
+    def process_to_digit(self, frame: ndarray, region_config: dict, rotation_angle: int, digit_region: dict) -> ndarray:
+        return self.scoreboard_finder.preprocess_scoreboard_region(frame, region_config, rotation_angle, digit_region)
 
     def get_score(self, img: ndarray) -> int:
         return self.scoreboard_reader.get_score(img)
@@ -43,3 +43,6 @@ class VideoService:
 
     def delete_video(self, file_name: str) -> bool:
         return self.video_loader.delete_video(file_name)
+
+    def set_template(self, template_path: Path):
+        self.scoreboard_finder.set_template(template_path)

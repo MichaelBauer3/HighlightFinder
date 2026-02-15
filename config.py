@@ -35,37 +35,66 @@ TEAMS = ["ewoks fc", "ewoks united"]
 FIELD_CONFIGS = {
     "West Field": {
         "name": "West Field (Top Left)",
-        "home_score_region": {
-            "x": 1563,
-            "y": 432,
-            "width": 9,
-            "height": 8
-        },
-        "away_score_region": {
-            "x": 1598,
-            "y":435,
-            "width": 9,
-            "height": 8
+        "scoreboard_region": {
+            'x': 1605,
+            'y': 322,
+            'width': 60,
+            'height': 60,
+
+            "local_offset": {
+                "dx": 28,
+                "dy": 8,
+                "w": 49,
+                "h": 22
+            },
+            "home_score_region": {
+                "x": 4,
+                "y": 8,
+                "width": 8,
+                "height": 7
+            },
+            "away_score_region": {
+                "x": 39,
+                "y": 8,
+                "width": 8,
+                "height": 7
+            }
         },
         "zoom_factor": 4.0,
-        "rotation_angle": 30,
+        "rotation_angle": 35,
+        "template_path": "west_field_template.png"
     },
     "East Field": {
         "name": "East Field (Top Right)",
-        "home_score_region": {
-            "x": 665,
-            "y": 353,
-            "width": 8,
-            "height": 7
-        },
-        "away_score_region": {
-            "x": 702,
-            "y": 353,
-            "width": 7,
-            "height": 7
+        "scoreboard_region": {
+            'x': 273,
+            'y': 210,
+            'width': 60,
+            'height': 60,
+
+            "local_offset":
+            {
+                "dx": -52,
+                "dy": 23,
+                "w": 49,
+                "h": 22
+            },
+            "home_score_region": {
+                "x": 4,
+                "y": 10,
+                "width": 8,
+                "height": 7
+            },
+            "away_score_region": {
+                "x": 39,
+                "y": 10,
+                "width": 8,
+                "height": 7
+            }
         },
         "zoom_factor": 3.0,
         "rotation_angle": -30,
+        "template_path": "east_field_template.png"
     }
 }
 

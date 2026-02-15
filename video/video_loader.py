@@ -102,10 +102,17 @@ class VideoLoader:
             "ffmpeg",
             "-y",
             "-ss", str(start_time),
-            "-i", file_path,
+            "-i", str(file_path),
             "-t", str(duration),
-            "-c", "copy",
-            clip_file_path,
+            "-c:v", "libx264",
+            "-preset", "veryfast",
+            "-b:v", "6M",
+            "-maxrate", "8M",
+            "-bufsize", "12M",
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac",
+            "-b:a", "128k",
+            str(clip_file_path),
         ]
 
         result = subprocess.run(

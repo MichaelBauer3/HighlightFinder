@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import tensorflow as tf
 from keras import layers
 from tensorflow import keras
@@ -31,8 +30,11 @@ val_ds = tf.keras.utils.image_dataset_from_directory(
 )
 
 # Improve performance
-train_ds = train_ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
-val_ds = val_ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+def scale_images(image, label):
+    return tf.cast(image, tf.float32) / 255, label
+
+train_ds = train_ds.map(scale_images).cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+val_ds = val_ds.map(scale_images).cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 
 # -----------------------------
 # 2. Build Model
@@ -41,20 +43,21 @@ val_ds = val_ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 model = keras.Sequential([
     # Input layer (28x28 grayscale)
     layers.Input(shape=(28, 28, 1)),
-    layers.Rescaling(1. / 255),
 
     # First Convolutional block
     layers.Conv2D(32, (3, 3), activation='relu'),
+    layers.BatchNormalization(),
     layers.MaxPooling2D((2, 2)),
 
     # Second Convolutional block
     layers.Conv2D(64, (3, 3), activation='relu'),
+    layers.BatchNormalization(),
     layers.MaxPooling2D((2, 2)),
 
     # Flatten and Classify
     layers.Flatten(),
-    layers.Dense(64, activation='relu'),
-    layers.Dropout(0.2),
+    layers.Dense(128, activation='relu'),
+    layers.Dropout(0.3),
     layers.Dense(10, activation='softmax'),
 ])
 
@@ -78,8 +81,7 @@ history = model.fit(
     epochs=10
 )
 
-model.save("digit_model.keras")
-"""
+model.save("digit_model.keras")"""
 
 # Uncomment this for sequential training
 model = keras.models.load_model("digit_model.keras")
