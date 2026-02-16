@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-02-11T02:52:51.021660",
+  "updated_at": "2026-02-16T03:18:17.640930",
   "fetched_by": "github-actions",
   "games": [
     {
-      "team": "turntable roc",
-      "opponent": "tessa dog pound",
-      "datetime": "2026-02-15T13:00:00",
-      "date": "2026-02-15",
-      "time": "01:00",
-      "day_of_week": "Sunday",
+      "team": "ewoks fc",
+      "opponent": "brighton barons",
+      "datetime": "2026-02-19T20:00:00",
+      "date": "2026-02-19",
+      "time": "08:00",
+      "day_of_week": "Thursday",
       "field": "East Field",
       "location": "Rochester Sports Garden: East Field",
-      "is_home": true,
-      "display_time": "1:00 - 1:50pm",
+      "is_home": false,
+      "display_time": "8:00pm - 8:50pm",
       "game_year": "2026",
       "game_month": "02",
-      "game_day": "15",
+      "game_day": "19",
       "game_month_and_year": "February 2026"
     }
   ],
