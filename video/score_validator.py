@@ -7,7 +7,7 @@ class ScoreValidator:
         self.frames_stable = 0
         self.initialized = False
 
-    def validate_score(self, frame_score: int) -> bool:
+    def validate_score(self, frame_score: int) -> tuple[bool, int]:
 
         if not self.initialized:
             if frame_score == 0:
@@ -23,29 +23,35 @@ class ScoreValidator:
                     self._reset_candidate()
             else:
                 self._reset_candidate()
-            return False
+            return False, self.last_valid_score
 
-        if frame_score == self.last_valid_score:
+        current_decade = (self.last_valid_score // 10) * 10
+        adjusted_score = current_decade + frame_score
+
+        if adjusted_score < self.last_valid_score:
+            adjusted_score += 10
+
+        if adjusted_score == self.last_valid_score:
             self._reset_candidate()
-            return False
+            return False, self.last_valid_score
 
-        score_increase = frame_score - self.last_valid_score
+        score_increase = adjusted_score - self.last_valid_score
 
         if score_increase == self.max_increment:
-            if frame_score != self.current_candidate:
-                self.current_candidate = frame_score
+            if adjusted_score != self.current_candidate:
+                self.current_candidate = adjusted_score
                 self.frames_stable = 1
             else:
                 self.frames_stable += 1
 
             if self.frames_stable >= self.required_stable:
-                self.last_valid_score = self.current_candidate
+                self.last_valid_score = adjusted_score
                 self._reset_candidate()
-                return True
+                return True, self.last_valid_score
         else:
             self._reset_candidate()
 
-        return False
+        return False, self.last_valid_score
 
     def _reset_candidate(self):
         self.current_candidate = None

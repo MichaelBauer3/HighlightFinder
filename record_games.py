@@ -50,6 +50,12 @@ def main():
             game_date = game['date'].replace('-', '')
             file_name = f"{team_name}_{game_date}.mp4"
 
+            # Edit these if ML model needs more data
+            """game['field'] = "East Field"
+            game['game_day'] = "15"
+            game['time'] = "12:00"
+            game['date'] = '2026-02-15'"""
+
             # Check if already recorded
             recording_path = RECORDINGS_DIR / file_name
             if recording_path.exists():
@@ -67,7 +73,7 @@ def main():
                 time.sleep(10)
 
                 # Record the game (Adjust 60 to N for N minutes)
-                duration = 55 * 60
+                duration = 60 * 60
                 success = video_service.screen_record_for_duration(recording_path, duration)
 
                 if success:

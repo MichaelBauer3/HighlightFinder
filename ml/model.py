@@ -74,15 +74,14 @@ model.summary()
 # 4. Train
 # -----------------------------
 # Uncomment this for first time training
-"""
-history = model.fit(
+"""history = model.fit(
     train_ds,
     validation_data=val_ds,
     epochs=10
 )
 
-model.save("digit_model.keras")"""
-
+model.save("digit_model.keras")
+"""
 # Uncomment this for sequential training
 model = keras.models.load_model("digit_model.keras")
 

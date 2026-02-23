@@ -9,8 +9,8 @@ from video.scoreboard_finder import ScoreboardFinder
 from config import FIELD_CONFIGS, METADATA_DIR
 
 ROOT_DIR = Path(__file__).parent.parent
-VIDEO_PATH = ROOT_DIR / "data/recordings/blank_scoreboard.mp4"
-FIELD = "East Field"
+VIDEO_PATH = ROOT_DIR / "data/recordings/tony_tigers.mp4"
+FIELD = "West Field"
 
 # Get both regions
 HOME_REGION = FIELD_CONFIGS[FIELD]["scoreboard_region"]["home_score_region"]
@@ -61,7 +61,6 @@ def main():
             save_path = os.path.join(OUTPUT_DIR, filename)
 
             cv2.imwrite(save_path, digit_img_uint8)
-            print(f"Saved: {save_path}")
 
     print("\nDone!")
 

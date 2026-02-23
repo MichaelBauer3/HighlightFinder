@@ -48,15 +48,15 @@ FIELD_CONFIGS = {
                 "h": 22
             },
             "home_score_region": {
-                "x": 4,
+                "x": 8,
                 "y": 8,
-                "width": 8,
+                "width": 3,
                 "height": 7
             },
             "away_score_region": {
-                "x": 39,
+                "x": 43,
                 "y": 8,
-                "width": 8,
+                "width": 3,
                 "height": 7
             }
         },
@@ -80,15 +80,15 @@ FIELD_CONFIGS = {
                 "h": 22
             },
             "home_score_region": {
-                "x": 4,
+                "x": 8,
                 "y": 10,
-                "width": 8,
+                "width": 4,
                 "height": 7
             },
             "away_score_region": {
-                "x": 39,
+                "x": 43,
                 "y": 10,
-                "width": 8,
+                "width": 4,
                 "height": 7
             }
         },

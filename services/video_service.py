@@ -35,7 +35,7 @@ class VideoService:
     def get_scores(self, home_img: ndarray, away_img: ndarray) -> tuple[int, int]:
         return self.scoreboard_reader.get_scores(home_img, away_img)
 
-    def validate_score(self, score: int) -> bool:
+    def validate_score(self, score: int) -> tuple[bool, int]:
         return self.score_validator.validate_score(score)
 
     def clip_goal(self, source_video: str, clip_name: str, start: int, duration: int) -> bool:

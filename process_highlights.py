@@ -73,14 +73,14 @@ def main():
                 score = video_service.get_score(score_processed)
 
                 # Validate score
-                is_valid_score = video_service.validate_score(score)
+                is_valid_score, real_score = video_service.validate_score(score)
 
                 # If valid, clip and save
                 if is_valid_score:
-                    goal_file_name = f"goal_{score}_{team_name}_{game_date}.mp4"
+                    goal_file_name = f"goal_{real_score}_{team_name}_{game_date}.mp4"
                     video_service.clip_goal(file_name, goal_file_name, timestamp - 30, 30)
                     goals_found += 1
-                    logging.info(f"Found goal {goals_found}: {score}")
+                    logging.info(f"Found goal {goals_found}: {real_score}")
 
             logging.info(f"Processing complete: {file_name}, found {goals_found} goals")
 

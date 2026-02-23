@@ -36,7 +36,7 @@ class ScoreboardFinder:
 
         upscaled = cv2.resize(gray, (0, 0), fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
 
-        _, cleaned = cv2.threshold(upscaled, 155, 255, cv2.THRESH_TOZERO)
+        _, cleaned = cv2.threshold(upscaled, 120, 255, cv2.THRESH_TOZERO)
 
         pad = 10
         padded = cv2.copyMakeBorder(cleaned, pad, pad, pad, pad, cv2.BORDER_CONSTANT, value=[0])
