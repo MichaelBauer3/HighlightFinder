@@ -1,5 +1,9 @@
 import logging
+import sys
+from pathlib import Path
 
+from data_model.game_context import GameContext
+from emailer.email_sender import EmailSender
 from schedule_reader import ScheduleReader
 from config import FIELD_CONFIGS, CLIPS_DIR, RECORDINGS_DIR, METADATA_DIR
 from video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
@@ -10,11 +14,14 @@ from services.video_service import VideoService
 def main():
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler(sys.stdout)]
     )
 
     schedule_reader = ScheduleReader()
     games = schedule_reader.fetch_schedule_from_github()
+
+    sender = EmailSender()
 
     scoreboard_finder = ScoreboardFinder()
     scoreboard_reader = ScoreboardReader()
@@ -30,46 +37,47 @@ def main():
         score_validator
     )
 
+    folder_paths = []
     for game in games:
-        team_name = game['team'].lower().replace(' ', '_')
-        game_date = game['date'].replace('-', '')
-        file_name = f"{team_name}_{game_date}.mp4"
-        file_path = RECORDINGS_DIR / file_name
-        is_home = game["is_home"]
+
+        game['field'] = "West Field"
+        game['is_home'] = True
+
+        game_context = GameContext.from_game(game, FIELD_CONFIGS)
 
         # Check if recording exists
-        if not file_path.exists():
-            logging.warning(f"Recording not found: {file_name}, skipping")
+        if not (RECORDINGS_DIR / game_context.file_name).exists():
+            logging.warning(f"Recording not found: {game_context.file_name}, skipping")
             continue
 
         # Check if already processed
-        existing_goals = list(CLIPS_DIR.glob(f"goal_*_{team_name}_{game_date}_*.mp4"))
+        clip_subdir = CLIPS_DIR / game_context.clip_folder_name()
+        folder_paths.append(clip_subdir)
+        existing_goals = list(clip_subdir.glob(f"goal_*_{game_context.team_name}_{game_context.game_date}.mp4"))
         if existing_goals:
-            logging.info(f"Already processed: {file_name}, skipping")
+            logging.info(f"Already processed: {game_context.file_name}, skipping")
             continue
 
-        logging.info(f"Processing video: {file_name}")
+        logging.info(f"Processing video: {game_context.file_name}")
 
-        # Get field configuration
-        field = FIELD_CONFIGS[game['field']]
-        rotation_angle = field['rotation_angle']
-        template = METADATA_DIR / field['template_path']
-
-        video_service.set_template(template)
-
-        config = field['scoreboard_region']
-        digit_region = config['home_score_region'] if is_home else config['away_score_region']
+        video_service.set_template(METADATA_DIR / game_context.field['template_path'])
+        config = game_context.field['scoreboard_region']
+        digit_region = config['home_score_region'] if game_context.is_home else config['away_score_region']
 
         # Process video
         sample_rate = 1
         goals_found = 0
 
         try:
-            for timestamp, frame in video_service.stream_frames(file_name, sample_rate):
+            for timestamp, frame in video_service.stream_frames(game_context.file_name, sample_rate):
                 # Process frame
-                score_processed = video_service.process_to_digit(frame, config, rotation_angle, digit_region)
+                score_processed = video_service.process_to_digit(
+                    frame,
+                    config,
+                    game_context.field['rotation_angle'],
+                    digit_region)
 
-                # Get score from model
+                # Get score from data_model
                 score = video_service.get_score(score_processed)
 
                 # Validate score
@@ -77,15 +85,17 @@ def main():
 
                 # If valid, clip and save
                 if is_valid_score:
-                    goal_file_name = f"goal_{real_score}_{team_name}_{game_date}.mp4"
-                    video_service.clip_goal(file_name, goal_file_name, timestamp - 30, 30)
+                    video_service.clip_goal(game_context, real_score, timestamp - 30, 30)
                     goals_found += 1
                     logging.info(f"Found goal {goals_found}: {real_score}")
 
-            logging.info(f"Processing complete: {file_name}, found {goals_found} goals")
+            logging.info(f"Processing complete: {game_context.file_name}, found {goals_found} goals")
+
+            # Send Google Drive Upload Link
+            #sender.send_highlights(link)
 
         except Exception as e:
-            logging.error(f"Failed to process {file_name}: {e}")
+            logging.error(f"Failed to process {game_context.file_name}: {e}")
 
 if __name__ == "__main__":
     main()
