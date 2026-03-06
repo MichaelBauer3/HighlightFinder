@@ -1,9 +1,8 @@
 import logging
 import sys
-from pathlib import Path
 
 from data_model.game_context import GameContext
-from emailer.email_sender import EmailSender
+from google.email_sender import EmailSender
 from schedule_reader import ScheduleReader
 from config import FIELD_CONFIGS, CLIPS_DIR, RECORDINGS_DIR, METADATA_DIR
 from video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
