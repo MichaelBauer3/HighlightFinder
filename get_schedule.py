@@ -4,6 +4,7 @@ Runs in GitHub Actions to fetch game schedule
 import json
 import logging
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -12,7 +13,8 @@ from services.day_smart_service import DaySmartService
 
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 logger = logging.getLogger(__name__)
 

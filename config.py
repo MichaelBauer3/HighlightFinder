@@ -25,6 +25,11 @@ DAY_SMART_EMAIL = config.get_user_settings("DAY_SMART_EMAIL_ADDRESS")
 DAY_SMART_PASSWORD = config.get_user_settings("DAY_SMART_PASSWORD")
 LIVE_BARN_EMAIL = config.get_user_settings("LIVE_BARN_EMAIL_ADDRESS")
 LIVE_BARN_PASSWORD = config.get_user_settings("LIVE_BARN_PASSWORD")
+
+SENDER_EMAIL_ADDRESS = config.get_user_settings("SENDER_EMAIL_ADDRESS")
+SENDER_EMAIL_PASSWORD = config.get_user_settings("SENDER_EMAIL_PASSWORD")
+SEND_TO_EMAIL_ADDRESS = config.get_user_settings("SEND_TO_EMAIL_ADDRESS")
+
 GITHUB_USERNAME = config.get_user_settings("GITHUB_USERNAME")
 GITHUB_REPO = config.get_user_settings("GITHUB_REPO")
 GITHUB_BRANCH = config.get_user_settings("GITHUB_BRANCH")
@@ -113,6 +118,7 @@ RECORDINGS_DIR = DATA_DIR / "recordings"
 CLIPS_DIR = DATA_DIR / "clips"
 METADATA_DIR = DATA_DIR / "metadata"
 LOGS_DIR = ROOT_DIR / "logs"
+ML_DIR = ROOT_DIR / "ml"
 
 for directory in [RECORDINGS_DIR, CLIPS_DIR, METADATA_DIR, LOGS_DIR]:
     directory.mkdir(parents=True, exist_ok=True)

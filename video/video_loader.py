@@ -7,6 +7,7 @@ import logging
 import glob
 
 from config import RECORDINGS_DIR, CLIPS_DIR
+from data_model.game_context import GameContext
 
 logger = logging.getLogger(__name__)
 
@@ -93,11 +94,18 @@ class VideoLoader:
     def _make_path(directory: str, file_name: str) -> Path:
         return Path(directory) / file_name
 
+    def clip_video(self, game_context: GameContext, real_score: int, start_time: int, duration: int) -> bool:
 
-    def clip_video(self, file_name: str, clip_file_name: str, start_time: int, duration: int) -> bool:
+        # Source Video
+        file_path = self._make_path(RECORDINGS_DIR, game_context.file_name)
 
-        file_path = self._make_path(RECORDINGS_DIR, file_name)
-        clip_file_path = self._make_path(CLIPS_DIR, clip_file_name)
+        # Clip Folder
+        clip_file_path = self._make_path(CLIPS_DIR, game_context.clip_folder_name())
+
+        clip_file_path.mkdir(parents=True, exist_ok=True)
+        clip_file_name = game_context.goal_file_name(real_score)
+        clip_goal_path = clip_file_path / clip_file_name
+
         cmd = [
             "ffmpeg",
             "-y",
@@ -112,7 +120,7 @@ class VideoLoader:
             "-pix_fmt", "yuv420p",
             "-c:a", "aac",
             "-b:a", "128k",
-            str(clip_file_path),
+            str(clip_goal_path),
         ]
 
         result = subprocess.run(

@@ -1,11 +1,14 @@
 import logging
+import sys
 import time
+from datetime import datetime
 
 from selenium.common import TimeoutException
 
+from data_model.game_context import GameContext
 from schedule_reader import ScheduleReader
 from scrapers import LiveBarnAuth, LiveBarnVideo
-from config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, RECORDINGS_DIR
+from config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, RECORDINGS_DIR, FIELD_CONFIGS
 from scrapers.driver_manager import DriverManager
 from services.live_barn_service import LiveBarnService
 from services.video_service import VideoService
@@ -15,7 +18,8 @@ from video import ScreenRecorder, ScoreboardFinder, ScoreboardReader, VideoLoade
 def main():
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler(sys.stdout)]
     )
 
     schedule_reader = ScheduleReader()
@@ -46,20 +50,24 @@ def main():
             score_validator)
 
         for game in games:
-            team_name = game['team'].lower().replace(' ', '_')
-            game_date = game['date'].replace('-', '')
-            file_name = f"{team_name}_{game_date}.mp4"
 
-            # Edit these if ML model needs more data
-            """game['field'] = "East Field"
-            game['game_day'] = "15"
-            game['time'] = "12:00"
-            game['date'] = '2026-02-15'"""
+            game_context = GameContext.from_game(game, FIELD_CONFIGS)
 
-            # Check if already recorded
-            recording_path = RECORDINGS_DIR / file_name
+            # Uncomment these if ML data_model needs more data
+            """game['field'] = "West Field"
+            game['game_day'] = "26"
+            game['time'] = "6:30"
+            game['date'] = '2026-02-26'
+            game['game_month_and_year'] = "February 2026" """
+
+            # Comment out when testing
+            if not game_context.has_occurred():
+                logging.info("Game has yet to occur")
+                continue
+
+            recording_path = RECORDINGS_DIR / game_context.file_name
             if recording_path.exists():
-                logging.info(f"Recording already exists: {file_name}, skipping")
+                logging.info(f"Recording already exists: {game_context.file_name}, skipping")
                 continue
 
             logging.info(f"Recording game: {game['team']} vs {game['opponent']}")
@@ -73,16 +81,16 @@ def main():
                 time.sleep(10)
 
                 # Record the game (Adjust 60 to N for N minutes)
-                duration = 60 * 60
+                duration = 65 * 60
                 success = video_service.screen_record_for_duration(recording_path, duration)
 
                 if success:
-                    logging.info(f"Successfully recorded: {file_name}")
+                    logging.info(f"Successfully recorded: {game_context.file_name}")
                 else:
-                    logging.error(f"Failed to record: {file_name}")
+                    logging.error(f"Failed to record: {game_context.file_name}")
 
             except Exception as e:
-                logging.error(f"Failed to record {file_name}: {e}")
+                logging.error(f"Failed to record {game_context.file_name}: {e}")
             finally:
                 try:
                     live_barn_service.logout()

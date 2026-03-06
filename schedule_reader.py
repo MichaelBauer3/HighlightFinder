@@ -1,21 +1,24 @@
 import logging
 import json
+import os
+
 import requests
 from datetime import datetime
 from pathlib import Path
 import sys
 
+from config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH, LOGS_DIR
+
+log_path = os.path.join(LOGS_DIR, "laptop_scheduler.log")
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('logs/laptop_scheduler.log'),
+        logging.FileHandler(log_path),
         logging.StreamHandler(sys.stdout)
     ]
 )
 logger = logging.getLogger(__name__)
-
-from config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH
 
 SCHEDULE_URL = f"https://raw.githubusercontent.com/{GITHUB_USERNAME}/{GITHUB_REPO}/{GITHUB_BRANCH}/schedule_data.json"
 

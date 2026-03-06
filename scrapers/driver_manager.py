@@ -25,7 +25,7 @@ class DriverManager:
         chrome_options.add_experimental_option('useAutomationExtension', False)
 
         chrome_options.add_argument(
-            '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+            '--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36')
 
         return chrome_options
 

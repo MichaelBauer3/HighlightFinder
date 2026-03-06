@@ -1,15 +1,18 @@
 import logging
+import os
 from pathlib import Path
 
 import keras
 import numpy as np
+
+from config import ML_DIR
 
 logger = logging.getLogger(__name__)
 
 class ScoreboardReader:
 
     def __init__(self):
-        model_path = Path("ml/digit_model.keras")
+        model_path = os.path.join(ML_DIR, "digit_model.keras")
         self.model = keras.models.load_model(model_path)
 
     @staticmethod

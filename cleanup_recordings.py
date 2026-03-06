@@ -1,11 +1,13 @@
 import logging
+import sys
 from pathlib import Path
 from datetime import datetime, timedelta
 
 def main():
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[logging.StreamHandler(sys.stdout)]
     )
 
     recordings_dir = Path("jobs/data/recordings")
