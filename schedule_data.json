@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-03-01T17:30:07.920616",
+  "updated_at": "2026-03-08T17:30:56.577210",
   "fetched_by": "github-actions",
   "games": [
     {
       "team": "ewoks fc",
-      "opponent": "tugma fc",
-      "datetime": "2026-03-05T23:00:00",
-      "date": "2026-03-05",
-      "time": "11:00",
+      "opponent": "batman team",
+      "datetime": "2026-03-12T19:30:00",
+      "date": "2026-03-12",
+      "time": "07:30",
       "day_of_week": "Thursday",
-      "field": "East Field",
-      "location": "Rochester Sports Garden: East Field",
-      "is_home": false,
-      "display_time": "11:00pm - 11:50pm",
+      "field": "West Field",
+      "location": "Rochester Sports Garden: West Field",
+      "is_home": true,
+      "display_time": "7:30pm - 8:20pm",
       "game_year": "2026",
       "game_month": "03",
-      "game_day": "5",
+      "game_day": "12",
       "game_month_and_year": "March 2026"
     }
   ],
