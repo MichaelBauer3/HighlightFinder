@@ -29,6 +29,9 @@ dataset_digits/
 
 /ml/*.keras
 
+/client_secret_735695569527-n01siq5iiroahfqjcvell9lldoncem0u.apps.googleusercontent.com.json
+/token.json
+
 # Logs
 logs/*.log
 *.log

@@ -30,6 +30,10 @@ SENDER_EMAIL_ADDRESS = config.get_user_settings("SENDER_EMAIL_ADDRESS")
 SENDER_EMAIL_PASSWORD = config.get_user_settings("SENDER_EMAIL_PASSWORD")
 SEND_TO_EMAIL_ADDRESS = config.get_user_settings("SEND_TO_EMAIL_ADDRESS")
 
+GOOGLE_FOLDER_ID = config.get_user_settings("GOOGLE_FOLDER_ID")
+GOOGLE_CREDENTIALS_PATH = str(Path(SCRIPT_DIR) / config.get_user_settings("GOOGLE_CREDENTIALS_PATH"))
+GOOGLE_TOKEN_PATH = str(Path(SCRIPT_DIR) / config.get_user_settings("GOOGLE_TOKEN_PATH"))
+
 GITHUB_USERNAME = config.get_user_settings("GITHUB_USERNAME")
 GITHUB_REPO = config.get_user_settings("GITHUB_REPO")
 GITHUB_BRANCH = config.get_user_settings("GITHUB_BRANCH")
@@ -53,15 +57,15 @@ FIELD_CONFIGS = {
                 "h": 22
             },
             "home_score_region": {
-                "x": 8,
-                "y": 8,
-                "width": 3,
-                "height": 7
+                "x": 7,
+                "y": 9,
+                "width": 4,
+                "height": 6
             },
             "away_score_region": {
-                "x": 43,
-                "y": 8,
-                "width": 3,
+                "x": 42,
+                "y": 9,
+                "width": 4,
                 "height": 7
             }
         },

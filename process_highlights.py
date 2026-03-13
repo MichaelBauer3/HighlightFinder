@@ -1,10 +1,12 @@
 import logging
 import sys
 
+from clip_exporter.drive_runner import DriveRunner
 from data_model.game_context import GameContext
-from google.email_sender import EmailSender
+from clip_exporter.email_sender import EmailSender
 from schedule_reader import ScheduleReader
 from config import FIELD_CONFIGS, CLIPS_DIR, RECORDINGS_DIR, METADATA_DIR
+from services.clip_exporter_service import ClipExporterService
 from video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
 from video.scoreboard_finder import ScoreboardFinder
 from services.video_service import VideoService
@@ -21,6 +23,7 @@ def main():
     games = schedule_reader.fetch_schedule_from_github()
 
     sender = EmailSender()
+    drive_runner = DriveRunner()
 
     scoreboard_finder = ScoreboardFinder()
     scoreboard_reader = ScoreboardReader()
@@ -34,6 +37,11 @@ def main():
         screen_recorder,
         video_loader,
         score_validator
+    )
+
+    clip_exporter_service = ClipExporterService(
+        drive_runner,
+        sender
     )
 
     folder_paths = []
@@ -88,7 +96,8 @@ def main():
             logging.info(f"Processing complete: {game_context.file_name}, found {goals_found} goals")
 
             # Send Google Drive Upload Link
-            #sender.send_highlights(link)
+            link = clip_exporter_service.upload_folder(clip_subdir)
+            clip_exporter_service.send_highlights(folder_paths, link)
 
         except Exception as e:
             logging.error(f"Failed to process {game_context.file_name}: {e}")

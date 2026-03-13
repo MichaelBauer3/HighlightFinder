@@ -24,7 +24,7 @@ class EmailSender:
         self.to = SEND_TO_EMAIL_ADDRESS
 
     def send_highlights(self, folders, link):
-        """Builds and sends the highlights google."""
+        """Builds and sends the highlights clip_exporter."""
 
         subject, body = self._build_email_content(folders, link)
         self._send(subject, body, link)
@@ -61,9 +61,9 @@ class EmailSender:
             logging.info(f"Email sent successfully with {len(folder_paths)} folder(s).")
 
         except smtplib.SMTPAuthenticationError:
-            logging.error("Authentication failed. Check your google/password in config.")
+            logging.error("Authentication failed. Check your clip_exporter/password in config.")
         except smtplib.SMTPException as e:
-            logging.error(f"Failed to send google: {e}")
+            logging.error(f"Failed to send clip_exporter: {e}")
 
     @staticmethod
     def _parse_folder(folder_path):
@@ -74,7 +74,7 @@ class EmailSender:
         """
         folder_name = os.path.basename(folder_path)
         parts = folder_name.split('_')
-        team_name = parts[0][1] if parts else "Unknown Team"
+        team_name = parts[0] + " " + parts[1] if parts else "Unknown Team"
 
         goal_count = sum(1 for f in os.listdir(folder_path) if f.endswith('.mp4'))
         return team_name, goal_count

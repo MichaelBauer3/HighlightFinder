@@ -9,7 +9,7 @@ from video.scoreboard_finder import ScoreboardFinder
 from config import FIELD_CONFIGS, METADATA_DIR
 
 ROOT_DIR = Path(__file__).parent.parent
-VIDEO_PATH = ROOT_DIR / "data/recordings/tony_tigers.mp4"
+VIDEO_PATH = ROOT_DIR / "data/recordings/ewoks_fc_20260312.mp4"
 FIELD = "West Field"
 
 # Get both regions
