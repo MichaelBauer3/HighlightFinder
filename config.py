@@ -31,8 +31,8 @@ SENDER_EMAIL_PASSWORD = config.get_user_settings("SENDER_EMAIL_PASSWORD")
 SEND_TO_EMAIL_ADDRESS = config.get_user_settings("SEND_TO_EMAIL_ADDRESS")
 
 GOOGLE_FOLDER_ID = config.get_user_settings("GOOGLE_FOLDER_ID")
-GOOGLE_CREDENTIALS_PATH = str(Path(SCRIPT_DIR) / config.get_user_settings("GOOGLE_CREDENTIALS_PATH"))
-GOOGLE_TOKEN_PATH = str(Path(SCRIPT_DIR) / config.get_user_settings("GOOGLE_TOKEN_PATH"))
+GOOGLE_CREDENTIALS_PATH =  config.get_user_settings("GOOGLE_CREDENTIALS_PATH")
+GOOGLE_TOKEN_PATH = config.get_user_settings("GOOGLE_TOKEN_PATH")
 
 GITHUB_USERNAME = config.get_user_settings("GITHUB_USERNAME")
 GITHUB_REPO = config.get_user_settings("GITHUB_REPO")

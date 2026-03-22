@@ -12,7 +12,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-from config import GOOGLE_FOLDER_ID, GOOGLE_CREDENTIALS_PATH, GOOGLE_TOKEN_PATH
+from config import GOOGLE_FOLDER_ID, GOOGLE_CREDENTIALS_PATH, GOOGLE_TOKEN_PATH, SCRIPT_DIR
 
 logging.basicConfig(
     level=logging.INFO,
@@ -26,24 +26,26 @@ class DriveRunner:
 
     def __init__(self):
         self.service = build("drive", "v3", credentials=self._get_credentials())
+        self.google_credentials_path = SCRIPT_DIR / GOOGLE_CREDENTIALS_PATH
+        self.google_token_path = SCRIPT_DIR / GOOGLE_TOKEN_PATH
 
     def _get_credentials(self) -> service_account.Credentials:
         """Loads the credentials from token.json or requires login if not present in solution"""
         credentials = None
-        if os.path.exists(GOOGLE_TOKEN_PATH):
-            credentials = Credentials.from_authorized_user_file(GOOGLE_TOKEN_PATH, scopes=self.SCOPES)
+        if os.path.exists(self.google_token_path):
+            credentials = Credentials.from_authorized_user_file(self.google_token_path, scopes=self.SCOPES)
 
         if not credentials or not credentials.valid:
             if credentials and credentials.expired and credentials.refresh_token:
                 credentials.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    GOOGLE_CREDENTIALS_PATH,
+                    self.google_credentials_path,
                     scopes=self.SCOPES
                 )
                 credentials = flow.run_local_server(port=0)
 
-            with open(GOOGLE_TOKEN_PATH, "w") as f:
+            with open(self.google_token_path, "w") as f:
                 f.write(credentials.to_json())
 
         return credentials
