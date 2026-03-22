@@ -25,9 +25,9 @@ class DriveRunner:
     SCOPES = ["https://www.googleapis.com/auth/drive"]
 
     def __init__(self):
+        self.google_credentials_path = Path(SCRIPT_DIR, GOOGLE_CREDENTIALS_PATH)
+        self.google_token_path = Path(SCRIPT_DIR, GOOGLE_TOKEN_PATH)
         self.service = build("drive", "v3", credentials=self._get_credentials())
-        self.google_credentials_path = SCRIPT_DIR / GOOGLE_CREDENTIALS_PATH
-        self.google_token_path = SCRIPT_DIR / GOOGLE_TOKEN_PATH
 
     def _get_credentials(self) -> service_account.Credentials:
         """Loads the credentials from token.json or requires login if not present in solution"""
