@@ -1,25 +1,57 @@
 {
-  "updated_at": "2026-03-08T17:30:56.577210",
+  "updated_at": "2026-03-22T19:14:09.005424",
   "fetched_by": "github-actions",
   "games": [
     {
-      "team": "ewoks fc",
-      "opponent": "batman team",
-      "datetime": "2026-03-12T19:30:00",
-      "date": "2026-03-12",
-      "time": "07:30",
+      "team": "ewoks united",
+      "opponent": "blue lock",
+      "datetime": "2026-03-26T18:30:00",
+      "date": "2026-03-26",
+      "time": "06:30",
       "day_of_week": "Thursday",
       "field": "West Field",
       "location": "Rochester Sports Garden: West Field",
+      "is_home": false,
+      "display_time": "6:30pm - 7:20pm",
+      "game_year": "2026",
+      "game_month": "03",
+      "game_day": "26",
+      "game_month_and_year": "March 2026"
+    },
+    {
+      "team": "ewoks fc",
+      "opponent": "scfc juniors",
+      "datetime": "2026-03-27T19:30:00",
+      "date": "2026-03-27",
+      "time": "07:30",
+      "day_of_week": "Friday",
+      "field": "East Field",
+      "location": "Rochester Sports Garden: East Field",
       "is_home": true,
       "display_time": "7:30pm - 8:20pm",
       "game_year": "2026",
       "game_month": "03",
-      "game_day": "12",
+      "game_day": "27",
+      "game_month_and_year": "March 2026"
+    },
+    {
+      "team": "ewoks fc",
+      "opponent": "gabe\u2019s young boys",
+      "datetime": "2026-03-28T17:30:00",
+      "date": "2026-03-28",
+      "time": "05:30",
+      "day_of_week": "Saturday",
+      "field": "West Field",
+      "location": "Rochester Sports Garden: West Field",
+      "is_home": true,
+      "display_time": "5:30pm - 6:20pm",
+      "game_year": "2026",
+      "game_month": "03",
+      "game_day": "28",
       "game_month_and_year": "March 2026"
     }
   ],
   "status": "success",
   "team_count": 2,
-  "game_count": 1
+  "game_count": 3
 }
