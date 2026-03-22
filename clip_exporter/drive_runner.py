@@ -33,14 +33,14 @@ class DriveRunner:
         """Loads the credentials from token.json or requires login if not present in solution"""
         credentials = None
         if os.path.exists(self.google_token_path):
-            credentials = Credentials.from_authorized_user_file(self.google_token_path, scopes=self.SCOPES)
+            credentials = Credentials.from_authorized_user_file(str(self.google_token_path), scopes=self.SCOPES)
 
         if not credentials or not credentials.valid:
             if credentials and credentials.expired and credentials.refresh_token:
                 credentials.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    self.google_credentials_path,
+                    str(self.google_credentials_path),
                     scopes=self.SCOPES
                 )
                 credentials = flow.run_local_server(port=0)
