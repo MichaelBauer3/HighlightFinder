@@ -47,6 +47,9 @@ def main():
     folder_paths = []
     for game in games:
 
+        # Uncomment for testing
+        #game['field'] = "East Field"
+
         game_context = GameContext.from_game(game, FIELD_CONFIGS)
 
         # Check if recording exists

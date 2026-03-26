@@ -54,11 +54,11 @@ def main():
             game_context = GameContext.from_game(game, FIELD_CONFIGS)
 
             # Uncomment these if ML data_model needs more data
-            """game['field'] = "West Field"
-            game['game_day'] = "26"
+            """game['field'] = "East Field"
+            game['game_day'] = "24"
             game['time'] = "6:30"
-            game['date'] = '2026-02-26'
-            game['game_month_and_year'] = "February 2026" """
+            game['date'] = '2026-03-24'
+            game['game_month_and_year'] = "March 2026" """
 
             # Comment out when testing
             if not game_context.has_occurred():
