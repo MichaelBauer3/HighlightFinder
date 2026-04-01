@@ -20,3 +20,6 @@ class LiveBarnService:
 
     def logout(self):
         self.live_barn_auth.logout()
+
+    def reset_between_videos(self):
+        self.live_barn_auth.reset_between_videos()

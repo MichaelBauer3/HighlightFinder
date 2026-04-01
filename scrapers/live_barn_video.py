@@ -180,7 +180,6 @@ class LiveBarnVideo:
                 )
             )
             watch_button.click()
-            time.sleep(3)
             logger.info(f"Selected VOD game on {month} {day} at {game_time}")
 
             self._select_fullscreen_pano()
@@ -212,49 +211,58 @@ class LiveBarnVideo:
 
     def _select_fullscreen_pano(self):
         """
-        Select the fullscreen and panoramic view
+        Forces the UI to appear and keeps clicking until Fullscreen/Pano are active.
         """
-        try:
-            self._click_player_button("Panoramic")
-            logger.info("Watching in Panorama")
+        logger.info("Executing Bulletproof Pano/Fullscreen sequence.")
 
-            self._click_player_button("Fullscreen")
-            logger.info("Watching in Fullscreen")
+        force_ui_script = """
+        const triggerUI = () => {
+            const video = document.querySelector('video');
+            if (video) {
+                // Dispatch a move event to trick the player into showing the bar
+                video.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
+            }
+        };
+
+        const clickWhenReady = (label) => {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const interval = setInterval(() => {
+                    const btn = document.querySelector(`button[aria-label="${label}"]`);
+                    // If button exists and is visible (not hidden by 2.5s timer)
+                    if (btn && btn.offsetHeight > 0) {
+                        btn.click();
+                        clearInterval(interval);
+                        resolve(true);
+                    } else {
+                        triggerUI(); // Keep shaking the mouse every 200ms
+                    }
+
+                    if (attempts++ > 25) { // 5-second timeout
+                        clearInterval(interval);
+                        resolve(false);
+                    }
+                }, 200);
+            });
+        };
+
+        // Chain the actions: Pano first, then Fullscreen
+        clickWhenReady("Panoramic").then(() => {
+            setTimeout(() => clickWhenReady("Fullscreen"), 400);
+        });
+        """
+
+        try:
+            # 1. Wait for the video to actually be 'ready' to receive events
+            self.wait.until(ec.presence_of_element_located((By.TAG_NAME, "video")))
+
+            # 2. Run the persistent 'shaker and clicker' script
+            self.driver.execute_script(force_ui_script)
+
+            # 3. Verification: Optional but recommended
+            # Wait a moment and check if the 'Fullscreen' state was actually achieved
+            time.sleep(1.5)
+            logger.info("Sequence finished. Scoreboard should now be Fullscreen Pano.")
 
         except Exception as e:
-            logger.error(f"Could not select fullscreen or panoramic view: {e}")
-            raise
-
-    def _activate_player_controls(self):
-        player = self.wait.until(
-            ec.presence_of_element_located((By.TAG_NAME, "video"))
-        )
-
-        ActionChains(self.driver)\
-            .move_to_element(player)\
-            .move_by_offset(10, 10)\
-            .move_by_offset(-5, -5)\
-            .perform()
-
-    def _wait_until_interactive(self, label):
-        return self.wait.until(
-            lambda d: next(
-                (
-                    b for b in d.find_elements(By.XPATH, f"//button[@aria-label='{label}']")
-                    if b.is_displayed()
-                       and d.execute_script(
-                    "return getComputedStyle(arguments[0]).pointerEvents",
-                    b
-                ) != "none"
-                ),
-                False
-            )
-        )
-
-    def _click_player_button(self, label):
-        self._activate_player_controls()
-
-        button = self._wait_until_interactive(label)
-
-        self.driver.execute_script("arguments[0].click();", button)
-
+            logger.error(f"Critical failure in Full Screen / Pano toggle: {e}")

@@ -1,8 +1,7 @@
 import logging
 import os
-from pathlib import Path
 
-import keras
+import tensorflow as tf
 import numpy as np
 
 from config import ML_DIR
@@ -12,8 +11,12 @@ logger = logging.getLogger(__name__)
 class ScoreboardReader:
 
     def __init__(self):
-        model_path = os.path.join(ML_DIR, "digit_model.keras")
-        self.model = keras.models.load_model(model_path)
+        model_path = os.path.join(ML_DIR, "digit_model.tflite")
+        self.interpreter = tf.lite.Interpreter(model_path=model_path)
+        self.interpreter.allocate_tensors()
+        self.input_details = self.interpreter.get_input_details()
+        self.output_details = self.interpreter.get_output_details()
+
 
     @staticmethod
     def _prepare_digit(img):
@@ -30,12 +33,6 @@ class ScoreboardReader:
 
         return img
 
-    def get_scores(self, home_img, away_img):
-        home_arr, away_arr = self._prepare_digit(home_img), self._prepare_digit(away_img)
-
-        return (np.argmax(self.model.predict(home_arr, verbose=0)),
-                np.argmax(self.model.predict(away_arr, verbose=0)))
-
     def get_score(self, img):
         """
             :param img: Preprocessed 28x28 normalized image from preprocess_scoreboard_region
@@ -43,4 +40,7 @@ class ScoreboardReader:
             """
 
         img_arr = self._prepare_digit(img)
-        return np.argmax(self.model.predict(img_arr, verbose=0))
+        self.interpreter.set_tensor(self.input_details[0]["index"], img_arr)
+        self.interpreter.invoke()
+        predictions = self.interpreter.get_tensor(self.output_details[0]["index"])
+        return int(np.argmax(predictions))

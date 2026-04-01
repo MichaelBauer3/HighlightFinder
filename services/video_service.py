@@ -4,6 +4,7 @@ from pathlib import Path
 from numpy import ndarray
 
 from data_model.game_context import GameContext
+from data_model.score_region import ScoreRegion
 from video import ScoreboardFinder, ScoreboardReader, VideoLoader, ScreenRecorder, ScoreValidator
 
 logger = logging.getLogger(__name__)
@@ -27,14 +28,11 @@ class VideoService:
     def stream_frames(self, file_name: str, sample_rate: int = 3):
         return self.video_loader.frames_generator(file_name, sample_rate)
 
-    def process_to_digit(self, frame: ndarray, region_config: dict, rotation_angle: int, digit_region: dict) -> ndarray:
-        return self.scoreboard_finder.preprocess_scoreboard_region(frame, region_config, rotation_angle, digit_region)
+    def get_digit_region(self, frame: ndarray, region_config: dict, region: ScoreRegion) -> ndarray:
+        return self.scoreboard_finder.get_scores(frame, region_config, region)
 
     def get_score(self, img: ndarray) -> int:
         return self.scoreboard_reader.get_score(img)
-
-    def get_scores(self, home_img: ndarray, away_img: ndarray) -> tuple[int, int]:
-        return self.scoreboard_reader.get_scores(home_img, away_img)
 
     def validate_score(self, score: int) -> tuple[bool, int]:
         return self.score_validator.validate_score(score)
@@ -45,5 +43,5 @@ class VideoService:
     def delete_video(self, file_name: str) -> bool:
         return self.video_loader.delete_video(file_name)
 
-    def set_template(self, template_path: Path):
-        self.scoreboard_finder.set_template(template_path)
+    def set_template(self, template_path: Path, anchor_template: Path):
+        self.scoreboard_finder.set_template(template_path, anchor_template)

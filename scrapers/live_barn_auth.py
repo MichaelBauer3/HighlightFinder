@@ -2,6 +2,7 @@ import logging
 import time
 
 from selenium.common import TimeoutException
+from selenium.webdriver import Keys
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -21,6 +22,10 @@ class LiveBarnAuth:
 
     def login(self) -> bool:
         """Login to LiveBarn"""
+
+        if self.is_logged_in:
+            logger.info("Already logged in, skipping login")
+            return True
 
         try:
             logger.info(f"Navigating to login page: {self.BASE_URL}")
@@ -94,3 +99,16 @@ class LiveBarnAuth:
                 logger.info("Browser closed successfully")
             except Exception as e:
                 logger.error(f"Error during logout: {e}")
+
+    def reset_between_videos(self):
+
+        try:
+            # Exit fullscreen
+            self.driver.switch_to.active_element.send_keys(Keys.ESCAPE)
+            time.sleep(2)
+
+            self.driver.get(self.BASE_URL)
+            time.sleep(5)
+
+        except Exception as e:
+            logger.warning(f"Reset failed: {e}")

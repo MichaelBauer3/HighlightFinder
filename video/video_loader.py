@@ -59,19 +59,20 @@ class VideoLoader:
         frame_interval = int(self.fps * sample_rate)
         frame_num = 0
 
-        while True:
+        while frame_num < self.frame_count:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_num)
             ret, frame = cap.read()
+
             if not ret:
                 break
 
             timestamp = frame_num / self.fps
+            yield timestamp, frame
 
-            if frame_num % frame_interval == 0:
-                yield timestamp, frame
+            frame_num += frame_interval
 
-            frame_num += 1
-
-            if frame_num % (frame_interval * 100) == 0:
+            progress_interval = frame_interval * 100
+            if frame_num % progress_interval < frame_interval:
                 progress = (frame_num / self.frame_count) * 100
                 logger.info(f"  Progress: {progress:.1f}% ({timestamp / 60:.1f} min)")
 

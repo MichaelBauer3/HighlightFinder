@@ -49,15 +49,16 @@ def main():
             video_loader,
             score_validator)
 
+        live_barn_service.login()
         for game in games:
 
             game_context = GameContext.from_game(game, FIELD_CONFIGS)
 
             # Uncomment these if ML data_model needs more data
             """game['field'] = "East Field"
-            game['game_day'] = "24"
-            game['time'] = "6:30"
-            game['date'] = '2026-03-24'
+            game['game_day'] = "12"
+            game['time'] = "8:00"
+            game['date'] = '2026-03-12'
             game['game_month_and_year'] = "March 2026" """
 
             # Comment out when testing
@@ -73,15 +74,14 @@ def main():
             logging.info(f"Recording game: {game['team']} vs {game['opponent']}")
 
             try:
-                # Log in and navigate to video
-                live_barn_service.login()
+                # navigate to video
                 live_barn_service.get_vod_video(game)
 
                 # Wait for video to load
                 time.sleep(10)
 
                 # Record the game (Adjust 60 to N for N minutes)
-                duration = 65 * 60
+                duration = 60 * 60
                 success = video_service.screen_record_for_duration(recording_path, duration)
 
                 if success:
@@ -89,14 +89,13 @@ def main():
                 else:
                     logging.error(f"Failed to record: {game_context.file_name}")
 
+                live_barn_service.reset_between_videos()
+                time.sleep(10)
+
             except Exception as e:
                 logging.error(f"Failed to record {game_context.file_name}: {e}")
-            finally:
-                try:
-                    live_barn_service.logout()
-                except TimeoutException:
-                    pass
 
+        live_barn_service.logout()
     except Exception as e:
         logging.error(f"Recording job failed: {e}")
     finally:

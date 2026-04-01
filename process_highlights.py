@@ -4,6 +4,7 @@ import sys
 from clip_exporter.drive_runner import DriveRunner
 from data_model.game_context import GameContext
 from clip_exporter.email_sender import EmailSender
+from data_model.score_region import ScoreRegion
 from schedule_reader import ScheduleReader
 from config import FIELD_CONFIGS, CLIPS_DIR, RECORDINGS_DIR, METADATA_DIR
 from services.clip_exporter_service import ClipExporterService
@@ -51,6 +52,8 @@ def main():
         #game['field'] = "East Field"
 
         game_context = GameContext.from_game(game, FIELD_CONFIGS)
+        template_path = METADATA_DIR / game_context.field['template_path']
+        anchor_template_path = METADATA_DIR / game_context.field['score_anchor_template_path']
 
         # Check if recording exists
         if not (RECORDINGS_DIR / game_context.file_name).exists():
@@ -67,9 +70,9 @@ def main():
 
         logging.info(f"Processing video: {game_context.file_name}")
 
-        video_service.set_template(METADATA_DIR / game_context.field['template_path'])
-        config = game_context.field['scoreboard_region']
-        digit_region = config['home_score_region'] if game_context.is_home else config['away_score_region']
+        video_service.set_template(template_path, anchor_template_path)
+
+        digit_region = ScoreRegion.HOME if game_context.is_home else ScoreRegion.AWAY
 
         # Process video
         sample_rate = 1
@@ -77,15 +80,17 @@ def main():
 
         try:
             for timestamp, frame in video_service.stream_frames(game_context.file_name, sample_rate):
+
                 # Process frame
-                score_processed = video_service.process_to_digit(
+                digit_processed = video_service.get_digit_region(
                     frame,
-                    config,
-                    game_context.field['rotation_angle'],
-                    digit_region)
+                    game_context.field,
+                    digit_region
+                )
+                digit_processed = digit_processed[digit_region]
 
                 # Get score from data_model
-                score = video_service.get_score(score_processed)
+                score = video_service.get_score(digit_processed)
 
                 # Validate score
                 is_valid_score, real_score = video_service.validate_score(score)

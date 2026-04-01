@@ -4,6 +4,7 @@ from pathlib import Path
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+
 class Config:
     def __init__(self, path="local_settings.json"):
         combined_path = os.path.join(SCRIPT_DIR, path)
@@ -31,7 +32,7 @@ SENDER_EMAIL_PASSWORD = config.get_user_settings("SENDER_EMAIL_PASSWORD")
 SEND_TO_EMAIL_ADDRESS = config.get_user_settings("SEND_TO_EMAIL_ADDRESS")
 
 GOOGLE_FOLDER_ID = config.get_user_settings("GOOGLE_FOLDER_ID")
-GOOGLE_CREDENTIALS_PATH =  config.get_user_settings("GOOGLE_CREDENTIALS_PATH")
+GOOGLE_CREDENTIALS_PATH = config.get_user_settings("GOOGLE_CREDENTIALS_PATH")
 GOOGLE_TOKEN_PATH = config.get_user_settings("GOOGLE_TOKEN_PATH")
 
 GITHUB_USERNAME = config.get_user_settings("GITHUB_USERNAME")
@@ -57,21 +58,25 @@ FIELD_CONFIGS = {
                 "h": 22
             },
             "home_score_region": {
-                "x": 7,
-                "y": 9,
-                "width": 4,
-                "height": 6
-            },
-            "away_score_region": {
-                "x": 42,
-                "y": 9,
+                "x": -17,
+                "y": -4,
                 "width": 4,
                 "height": 7
+            },
+            "away_score_region": {
+                "x": 18,
+                "y": -4,
+                "width": 4,
+                "height": 7
+            },
+            "nested_offset" : {
+                "dx": 25,
+                "dy": -4,
             }
         },
-        "zoom_factor": 4.0,
-        "rotation_angle": 35,
-        "template_path": "west_field_template.png"
+        "rotation_angle": 36,
+        "template_path": "templates/west/west_field_template.png",
+        "score_anchor_template_path": "templates/west/west_scoreboard.png",
     },
     "East Field": {
         "name": "East Field (Top Right)",
@@ -81,29 +86,32 @@ FIELD_CONFIGS = {
             'width': 60,
             'height': 60,
 
-            "local_offset":
-            {
+            "local_offset": {
                 "dx": -52,
-                "dy": 23,
+                "dy": 24,
                 "w": 49,
                 "h": 22
             },
             "home_score_region": {
-                "x": 8,
-                "y": 10,
+                "x": -18,
+                "y": -2,
                 "width": 4,
                 "height": 7
             },
             "away_score_region": {
-                "x": 43,
-                "y": 10,
+                "x": 17,
+                "y": -2,
                 "width": 4,
                 "height": 7
+            },
+            "nested_offset" : {
+                "dx": 25,
+                "dy": -6
             }
         },
-        "zoom_factor": 3.0,
         "rotation_angle": -30,
-        "template_path": "east_field_template.png"
+        "template_path": "templates/east/east_field_template.png",
+        "score_anchor_template_path": "templates/east/east_scoreboard.png",
     }
 }
 

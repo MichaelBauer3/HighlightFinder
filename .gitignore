@@ -28,6 +28,7 @@ dataset_digits/
 !data/clips/.gitkeep
 
 /ml/*.keras
+/ml/*.tflite
 
 /client_secret_735695569527-n01siq5iiroahfqjcvell9lldoncem0u.apps.googleusercontent.com.json
 /token.json

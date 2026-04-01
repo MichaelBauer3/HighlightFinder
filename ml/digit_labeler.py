@@ -9,7 +9,7 @@ from video.scoreboard_finder import ScoreboardFinder
 from config import FIELD_CONFIGS, METADATA_DIR
 
 ROOT_DIR = Path(__file__).parent.parent
-VIDEO_PATH = ROOT_DIR / "data/recordings/ewoks_fc_20260312.mp4"
+VIDEO_PATH = ROOT_DIR / "data/recordings/west_5-9-25daysago_20260303.mp4"
 FIELD = "West Field"
 
 # Get both regions
@@ -26,11 +26,11 @@ def main():
     video = VideoLoader()
     finder = ScoreboardFinder()
 
-    template = METADATA_DIR / FIELD_CONFIGS[FIELD]['template_path']
-    finder.set_template(template)
+    scoreboard_template = METADATA_DIR / FIELD_CONFIGS[FIELD]['template_path']
+    anchor_template = METADATA_DIR / FIELD_CONFIGS[FIELD]['score_anchor_template_path']
+    finder.set_template(scoreboard_template, anchor_template)
 
-    field = FIELD_CONFIGS[FIELD]
-    config = field['scoreboard_region']
+    field_config = FIELD_CONFIGS[FIELD]
 
     print("\nExtracting digit frames...")
     print(f"Saving to: {OUTPUT_DIR}\n")
@@ -41,26 +41,30 @@ def main():
     for timestamp, frame in video.frames_generator(VIDEO_PATH, sample_rate=1):
         frame_index += 1
 
-        regions = {
-            'home': HOME_REGION,
-            'away': AWAY_REGION
-        }
+        scores = finder.get_scores(frame, field_config)
+        home_digit = scores["home"]
+        away_digit = scores["away"]
 
-        for team, region in regions.items():
+        if home_digit is None or home_digit.size == 0:
+            print(f"Skipping empty home ROI on frame {frame_index}")
+            continue
 
-            digit_img = finder.preprocess_scoreboard_region(frame, config, ROTATION, region)
+        if away_digit is None or away_digit.size == 0:
+            print(f"Skipping empty away ROI on frame {frame_index}")
+            continue
 
-            if digit_img is None or digit_img.size == 0:
-                print(f"Skipping empty {team} ROI on frame {frame_index}")
-                continue
+        # Convert from normalized float [0,1] to uint8 [0,255] for saving
+        home_digit_img_uint8 = (home_digit * 255).astype('uint8')
+        away_digit_img_uint8 = (away_digit * 255).astype('uint8')
 
-            # Convert from normalized float [0,1] to uint8 [0,255] for saving
-            digit_img_uint8 = (digit_img * 255).astype('uint8')
+        home_filename = f"frame_home_{frame_index}_{int(time.time())}.png"
+        away_filename = f"frame_away_{frame_index}_{int(time.time())}.png"
 
-            filename = f"frame_{team}_{frame_index}_{int(time.time())}.png"
-            save_path = os.path.join(OUTPUT_DIR, filename)
+        home_save_path = os.path.join(OUTPUT_DIR, home_filename)
+        away_save_path = os.path.join(OUTPUT_DIR, away_filename)
 
-            cv2.imwrite(save_path, digit_img_uint8)
+        cv2.imwrite(away_save_path, away_digit_img_uint8)
+        cv2.imwrite(home_save_path, home_digit_img_uint8)
 
     print("\nDone!")
 
