@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T13:36:55.959182",
+  "updated_at": "2026-04-09T01:20:36.647048",
   "fetched_by": "github-actions",
   "games": [
     {
@@ -17,9 +17,25 @@
       "game_month": "04",
       "game_day": "9",
       "game_month_and_year": "April 2026"
+    },
+    {
+      "team": "tony's tigers",
+      "opponent": "bts athletics",
+      "datetime": "2026-04-12T17:00:00",
+      "date": "2026-04-12",
+      "time": "05:00",
+      "day_of_week": "Sunday",
+      "field": "East Field",
+      "location": "Rochester Sports Garden: East Field",
+      "is_home": true,
+      "display_time": "5:00pm - 5:50pm",
+      "game_year": "2026",
+      "game_month": "04",
+      "game_day": "12",
+      "game_month_and_year": "April 2026"
     }
   ],
   "status": "success",
-  "team_count": 2,
-  "game_count": 1
+  "team_count": 3,
+  "game_count": 2
 }
