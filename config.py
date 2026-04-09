@@ -40,7 +40,7 @@ GITHUB_REPO = config.get_user_settings("GITHUB_REPO")
 GITHUB_BRANCH = config.get_user_settings("GITHUB_BRANCH")
 
 # Teams to track
-TEAMS = ["ewoks fc", "ewoks united"]
+TEAMS = ["ewoks fc", "ewoks united", "tony's tigers"]
 
 FIELD_CONFIGS = {
     "West Field": {
