@@ -89,6 +89,9 @@ def main():
                 )
                 digit_processed = digit_processed[digit_region]
 
+                if digit_processed is None:
+                    continue
+
                 # Get score from data_model
                 score = video_service.get_score(digit_processed)
 

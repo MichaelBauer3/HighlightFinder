@@ -102,14 +102,15 @@ class ScoreboardFinder:
         :return: Dict with 'home' and/or 'away' as 28x28 float32 arrays, or None on failure
         """
         scoreboard = self.get_scoreboard(frame, config)
-        if scoreboard is None:
+        if scoreboard is None or scoreboard.size == 0:
+            logger.warning("get_scoreboard returned empty — skipping frame")
             return {k: None for k in ("home", "away")}
 
         scoreboard_gray = cv2.cvtColor(scoreboard, cv2.COLOR_BGR2GRAY)
         anchor = self._match_local_template(scoreboard_gray, self.score_anchor_template)
 
         if anchor is None:
-            logger.warning("2nd template match failed — anchor blob not found in scoreboard crop")
+            logger.warning("2nd template match failed — skipping frame")
             return {k: None for k in ("home", "away")}
 
         region_config = config["scoreboard_region"]
@@ -154,12 +155,17 @@ class ScoreboardFinder:
         if scoreboard is None:
             return None
 
-        x = anchor["x"] + region_config["x"]
-        y = anchor["y"] + region_config["y"]
+        x = max(0, anchor["x"] + region_config["x"])
+        y = max(0, anchor["y"] + region_config["y"])
         w = region_config["width"]
         h = region_config["height"]
 
         region = scoreboard[y: y + h, x: x + w].copy()
+
+        if region.size == 0:
+            logger.warning(
+                f"Empty region crop — anchor=({anchor['x']},{anchor['y']}) offset=({region_config['x']},{region_config['y']}) computed x={x} y={y} w={w} h={h} scoreboard={scoreboard.shape}")
+            return None
 
         gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY)
 
@@ -233,7 +239,7 @@ class ScoreboardFinder:
     def _match_local_template(
             search_img: np.ndarray,
             template: np.ndarray,
-            threshold: float = 0.8):
+            threshold: float = 0.6):
         """
         2nd template match — find the stable anchor blob within the 22x49 scoreboard crop.
 
@@ -249,9 +255,15 @@ class ScoreboardFinder:
         result = cv2.matchTemplate(search_blur, template_blur, cv2.TM_CCOEFF_NORMED)
         _, max_val, _, max_loc = cv2.minMaxLoc(result)
 
-        if max_val < threshold:
-            logger.debug(f"2nd template match confidence {max_val:.3f} below threshold {threshold}")
-            return None
+        if max_val < threshold and max_val != 0: # At 30 minutes, screen goes black while switching VOD
+            logger.info(f"2nd template match confidence {max_val:.3f} below threshold {threshold}")
+
+            # Don't make the job fail
+            return {
+                "x": 0,
+                "y": 0,
+                "confidence": 0
+            }
 
         return {
             "x": max_loc[0],

@@ -49,6 +49,7 @@ class EmailSender:
         msg = MIMEMultipart()
         msg['From'] = self.email
         msg['To'] = self.to
+        msg['Cc'] = self.email
         msg['Subject'] = subject
         msg.attach(MIMEText(body, 'plain'))
 

@@ -14,7 +14,7 @@ class ScreenRecorder:
             "ffmpeg",
             "-y",
             "-f", "x11grab",
-            "-i", ":0",
+            "-i", str(self._get_active_display()),
             "-r", str(fps),
             "-t", str(duration),
 
@@ -40,3 +40,28 @@ class ScreenRecorder:
             os.killpg(self.proc.pid, signal.SIGTERM)
 
         return recording_path.exists()
+
+
+    @staticmethod
+    def _get_active_display() -> str:
+
+        display = os.environ.get("DISPLAY")
+        if display:
+            return display
+
+        # Fall back to scanning common display numbers
+        for display_num in range(3):
+            candidate = f":{display_num}"
+            try:
+                result = subprocess.run(
+                    ["xdpyinfo", "-display", candidate],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    timeout=2
+                )
+                if result.returncode == 0:
+                    return candidate
+            except (subprocess.TimeoutExpired, FileNotFoundError):
+                continue
+
+        raise RuntimeError("No active X display found — is an X server running?")

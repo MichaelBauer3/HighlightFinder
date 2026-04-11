@@ -59,13 +59,13 @@ FIELD_CONFIGS = {
             },
             "home_score_region": {
                 "x": -17,
-                "y": -4,
+                "y": -3,
                 "width": 4,
                 "height": 7
             },
             "away_score_region": {
                 "x": 18,
-                "y": -4,
+                "y": -3,
                 "width": 4,
                 "height": 7
             },
@@ -74,6 +74,7 @@ FIELD_CONFIGS = {
                 "dy": -4,
             }
         },
+        # Current setup has anchor at (0, 15)
         "rotation_angle": 36,
         "template_path": "templates/west/west_field_template.png",
         "score_anchor_template_path": "templates/west/west_scoreboard.png",
@@ -109,6 +110,7 @@ FIELD_CONFIGS = {
                 "dy": -6
             }
         },
+        # Current setup has anchor at (0, 17)
         "rotation_angle": -30,
         "template_path": "templates/east/east_field_template.png",
         "score_anchor_template_path": "templates/east/east_scoreboard.png",
