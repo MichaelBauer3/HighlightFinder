@@ -1,7 +1,7 @@
 # .gitignore
 
 # Credentials
-local_settings.json
+src/app/config/local_settings.json
 .env
 *.env
 
@@ -20,18 +20,18 @@ data/recordings/*.mp4
 data/recordings/*.avi
 *.mp4
 *.avi
-data/metadata/schedule_cache.json
-dataset_digits/
 
 # Keep directory structure but ignore video files
 !data/recordings/.gitkeep
 !data/clips/.gitkeep
+!data/metadata/.gitkeep
+!data/digits/raw/.gitkeep
+!data/digits/labeled/.gitkeep
 
-/ml/*.keras
-/ml/*.tflite
+src/app/ml/*.keras
+src/app/ml/*.tflite
 
-/client_secret_735695569527-n01siq5iiroahfqjcvell9lldoncem0u.apps.googleusercontent.com.json
-/token.json
+secrets/
 
 # Logs
 logs/*.log

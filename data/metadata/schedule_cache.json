@@ -1,0 +1,25 @@
+{
+  "updated_at": "2026-04-16T22:37:08.369184",
+  "fetched_by": "github-actions",
+  "games": [
+    {
+      "team": "tony's tigers",
+      "opponent": "atlas",
+      "datetime": "2026-04-19T16:00:00",
+      "date": "2026-04-19",
+      "time": "04:00",
+      "day_of_week": "Sunday",
+      "field": "East Field",
+      "location": "Rochester Sports Garden: East Field",
+      "is_home": true,
+      "display_time": "4:00pm - 4:50pm",
+      "game_year": "2026",
+      "game_month": "04",
+      "game_day": "19",
+      "game_month_and_year": "April 2026"
+    }
+  ],
+  "status": "success",
+  "team_count": 3,
+  "game_count": 1
+}
