@@ -31,7 +31,7 @@ class GameContext:
         return f"goal_{score}_{self.team_name}_{self.game_date}.mp4"
 
     def clip_folder_name(self) -> str:
-        return f"{self.team_name}_{self.opponent_name}_{self.game_date}_HL"
+        return f"{self.team_name}_vs_{self.opponent_name}_{self.game_date}_HL"
 
     def has_occurred(self) -> bool:
         return self.datetime <= datetime.now()

@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 import sys
 
-from config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH, LOGS_DIR
+from config.config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH, LOGS_DIR
 
 log_path = os.path.join(LOGS_DIR, "laptop_scheduler.log")
 logging.basicConfig(
@@ -20,14 +20,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-SCHEDULE_URL = f"https://raw.githubusercontent.com/{GITHUB_USERNAME}/{GITHUB_REPO}/{GITHUB_BRANCH}/schedule_data.json"
+SCHEDULE_URL = (f"https://raw.githubusercontent.com/{GITHUB_USERNAME}/{GITHUB_REPO}/{GITHUB_BRANCH}"
+                "/data/metadata/schedule_cache.json")
 
 
 class ScheduleReader:
     """Manages game recordings based on GitHub schedule"""
 
     def __init__(self):
-        self.schedule_cache = Path("data/metadata/schedule_cache.json")
+        self.schedule_cache = Path("../data/metadata/schedule_cache.json")
         self.scheduled_games = []
 
     def fetch_schedule_from_github(self):

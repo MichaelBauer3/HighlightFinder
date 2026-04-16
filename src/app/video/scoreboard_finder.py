@@ -5,7 +5,7 @@ import logging
 
 import numpy as np
 
-from data_model.score_region import ScoreRegion
+from src.app.data_model.score_region import ScoreRegion
 
 logger = logging.getLogger(__name__)
 
@@ -106,70 +106,43 @@ class ScoreboardFinder:
             logger.warning("get_scoreboard returned empty — skipping frame")
             return {k: None for k in ("home", "away")}
 
-        scoreboard_gray = cv2.cvtColor(scoreboard, cv2.COLOR_BGR2GRAY)
-        anchor = self._match_local_template(scoreboard_gray, self.score_anchor_template)
-
-        if anchor is None:
-            logger.warning("2nd template match failed — skipping frame")
-            return {k: None for k in ("home", "away")}
-
         region_config = config["scoreboard_region"]
-        nested = region_config["nested_offset"]
-
-        centered_anchor = {
-            "x": anchor["x"] + nested["dx"],
-            "y": anchor["y"] + nested["dy"]
-        }
-
         result = {}
 
         if target in (ScoreRegion.HOME, ScoreRegion.BOTH):
             result["home"] = self._crop_digit_for_ml(
-                scoreboard, centered_anchor, region_config["home_score_region"]
+                scoreboard, region_config["home_score_region"]
             )
 
         if target in (ScoreRegion.AWAY, ScoreRegion.BOTH):
             result["away"] = self._crop_digit_for_ml(
-                scoreboard, centered_anchor, region_config["away_score_region"]
+                scoreboard, region_config["away_score_region"]
             )
 
         return result
 
-
     @staticmethod
-    def _crop_digit_for_ml(
-            scoreboard: np.ndarray,
-            anchor: dict,
-            region_config: dict
-    ) -> np.ndarray | None:
-        """
-        Crop a digit region from the scoreboard and preprocess for CNN input.
-
-        :param scoreboard: 22x49 BGR scoreboard crop
-        :param anchor: 2nd template match result dict with 'x', 'y' keys
-        :param region_config: home/away_score_region with x, y, width, height
-                              where x/y are offsets from the anchor position
-        :return: 28x28 float32 ndarray normalised to [0, 1]
-        """
-
+    def _crop_digit_for_ml(scoreboard, region_config) -> np.ndarray | None:
         if scoreboard is None:
             return None
 
-        x = max(0, anchor["x"] + region_config["x"])
-        y = max(0, anchor["y"] + region_config["y"])
+        x = max(0, region_config["x"])
+        y = max(0, region_config["y"])
         w = region_config["width"]
         h = region_config["height"]
+
+        x = min(x, scoreboard.shape[1] - 1)
+        y = min(y, scoreboard.shape[0] - 1)
+        w = min(w, scoreboard.shape[1] - x)
+        h = min(h, scoreboard.shape[0] - y)
 
         region = scoreboard[y: y + h, x: x + w].copy()
 
         if region.size == 0:
-            logger.warning(
-                f"Empty region crop — anchor=({anchor['x']},{anchor['y']}) offset=({region_config['x']},{region_config['y']}) computed x={x} y={y} w={w} h={h} scoreboard={scoreboard.shape}")
+            logger.warning(f"Empty region crop x={x} y={y} w={w} h={h}")
             return None
 
         gray = cv2.cvtColor(region, cv2.COLOR_BGR2GRAY)
-
-        # noinspection PyTypeChecker
         gray: np.ndarray = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
 
         upscaled = cv2.resize(gray, (0, 0), fx=4, fy=4, interpolation=cv2.INTER_NEAREST)

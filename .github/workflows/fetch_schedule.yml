@@ -75,19 +75,19 @@ jobs:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          python get_schedule.py
+          python scripts/get_schedule.py
 
       - name: Display schedule
         run: |
           echo "Schedule fetched successfully!"
           echo ""
-          cat schedule_data.json
+          cat data/metadata/schedule_cache.json
 
       - name: Commit schedule to repository
         run: |
           git config --global user.name 'GitHub Actions Bot'
           git config --global user.email 'actions@github.com'
-          git add schedule_data.json
+          git add data/metadata/schedule_cache.json
           
           # Only commit if there are changes
           if ! git diff --staged --quiet; then
@@ -107,10 +107,10 @@ jobs:
           echo "SCHEDULE FETCH COMPLETE"
           echo "================================"
           
-          if [ -f schedule_data.json ]; then
-            GAME_COUNT=$(jq '.game_count // 0' schedule_data.json)
-            STATUS=$(jq -r '.status // "unknown"' schedule_data.json)
-            UPDATED=$(jq -r '.updated_at // "unknown"' schedule_data.json)
+          if [ -f data/metadata/schedule_cache.json ]; then
+            GAME_COUNT=$(jq '.game_count // 0' data/metadata/schedule_cache.json)
+            STATUS=$(jq -r '.status // "unknown"' data/metadata/schedule_cache.json)
+            UPDATED=$(jq -r '.updated_at // "unknown"' data/metadata/schedule_cache.json)
             
             echo "Status: $STATUS"
             echo "Games found: $GAME_COUNT"
@@ -119,10 +119,10 @@ jobs:
             if [ "$STATUS" = "success" ] && [ "$GAME_COUNT" -gt 0 ]; then
               echo ""
               echo "Game details:"
-              jq -r '.games[] | "  - \(.team) vs \(.opponent): \(.date) at \(.time) (\(.field))"' schedule_data.json
+              jq -r '.games[] | "  - \(.team) vs \(.opponent): \(.date) at \(.time) (\(.field))"' data/metadata/schedule_cache.json
             fi
           else
-            echo "schedule_data.json not found"
+            echo "data/metadata/schedule_cache.json not found"
           fi
           
           echo "================================"

@@ -2,7 +2,8 @@ import tensorflow as tf
 from keras import layers
 from tensorflow import keras
 
-DATA_DIR = "../dataset_digits"
+DATA_DIR = "../../../data/labeled"
+MODEL_NAME = "digit_model"
 
 # -----------------------------
 # 1. Load Dataset
@@ -29,32 +30,45 @@ val_ds = tf.keras.utils.image_dataset_from_directory(
     label_mode='categorical'
 )
 
-# Improve performance
-def scale_images(image, label):
-    return tf.cast(image, tf.float32) / 255, label
+# -----------------------------
+# 2. Augmentation
+# Simulates 1px drift in any direction at 28x28 scale
+# height_factor/width_factor of 1/28 ≈ 0.036 = exactly 1 pixel
+# -----------------------------
+augmentation = keras.Sequential([
+    layers.RandomTranslation(
+        height_factor=(-1/28, 1/28),
+        width_factor=(-1/28, 1/28),
+        fill_mode='constant',
+        fill_value=0.0
+    ),
+])
 
-train_ds = train_ds.map(scale_images).cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+def scale_and_augment(image, label):
+    image = tf.cast(image, tf.float32) / 255.0
+    image = augmentation(image, training=True)
+    return image, label
+
+def scale_images(image, label):
+    return tf.cast(image, tf.float32) / 255.0, label
+
+train_ds = train_ds.map(scale_and_augment).cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 val_ds = val_ds.map(scale_images).cache().prefetch(buffer_size=tf.data.AUTOTUNE)
 
 # -----------------------------
-# 2. Build Model
+# 3. Build Model
 # -----------------------------
-
 model = keras.Sequential([
-    # Input layer (28x28 grayscale)
     layers.Input(shape=(28, 28, 1)),
 
-    # First Convolutional block
     layers.Conv2D(32, (3, 3), activation='relu'),
     layers.BatchNormalization(),
     layers.MaxPooling2D((2, 2)),
 
-    # Second Convolutional block
     layers.Conv2D(64, (3, 3), activation='relu'),
     layers.BatchNormalization(),
     layers.MaxPooling2D((2, 2)),
 
-    # Flatten and Classify
     layers.Flatten(),
     layers.Dense(128, activation='relu'),
     layers.Dropout(0.3),
@@ -69,22 +83,9 @@ model.compile(
 
 model.summary()
 
-
 # -----------------------------
 # 4. Train
 # -----------------------------
-# Uncomment this for first time training
-"""history = model.fit(
-    train_ds,
-    validation_data=val_ds,
-    epochs=10
-)
-
-model.save("digit_model.keras")
-"""
-# Uncomment this for sequential training
-model = keras.models.load_model("digit_model.keras")
-
 early_stop = keras.callbacks.EarlyStopping(
     monitor='val_loss',
     patience=5,
@@ -98,6 +99,27 @@ history = model.fit(
     callbacks=[early_stop]
 )
 
-model.save("digit_model.keras")
+model.save(f"{MODEL_NAME}.keras")
 
-model.summary()
+# -----------------------------
+# 5. Convert to TFLite with optimization
+# -----------------------------
+
+# Representative dataset for quantization calibration
+def representative_dataset():
+    for images, _ in train_ds.unbatch().batch(1).take(200):
+        yield [tf.cast(images, tf.float32)]
+
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+converter.optimizations = [tf.lite.Optimize.DEFAULT]
+converter.representative_dataset = representative_dataset
+converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
+converter.inference_input_type = tf.float32
+converter.inference_output_type = tf.float32
+
+tflite_model = converter.convert()
+
+with open(f"{MODEL_NAME}.tflite", "wb") as f:
+    f.write(tflite_model)
+
+print(f"Saved {MODEL_NAME}.keras and {MODEL_NAME}.tflite")

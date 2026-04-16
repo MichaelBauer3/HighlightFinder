@@ -4,13 +4,13 @@ from pathlib import Path
 import cv2
 import time
 
-from video import VideoLoader
-from video.scoreboard_finder import ScoreboardFinder
-from config import FIELD_CONFIGS, METADATA_DIR
+from src.app.video import VideoLoader
+from src.app.video.scoreboard_finder import ScoreboardFinder
+from config.config import FIELD_CONFIGS, METADATA_DIR, DATA_DIR
 
 ROOT_DIR = Path(__file__).parent.parent
-VIDEO_PATH = ROOT_DIR / "data/recordings/west_5-9-25daysago_20260303.mp4"
-FIELD = "West Field"
+VIDEO_PATH = ROOT_DIR / "data/recordings/east_6-8-23daysago_20260305.mp4"
+FIELD = "East Field"
 
 # Get both regions
 HOME_REGION = FIELD_CONFIGS[FIELD]["scoreboard_region"]["home_score_region"]
@@ -18,7 +18,7 @@ AWAY_REGION = FIELD_CONFIGS[FIELD]["scoreboard_region"]["away_score_region"]
 ROTATION = FIELD_CONFIGS[FIELD]['rotation_angle']
 
 # Output dir
-OUTPUT_DIR = ROOT_DIR / "dataset_unsorted"
+OUTPUT_DIR = DATA_DIR / "raw"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 

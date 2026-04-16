@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from clip_exporter import EmailSender
-from clip_exporter.drive_runner import DriveRunner
+from app.clip_exporter import EmailSender
+from app.clip_exporter.drive_runner import DriveRunner
 
 
 class ClipExporterService:

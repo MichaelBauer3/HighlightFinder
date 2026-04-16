@@ -5,7 +5,7 @@ import sys
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from config import SENDER_EMAIL_ADDRESS, SENDER_EMAIL_PASSWORD, SEND_TO_EMAIL_ADDRESS
+from config.config import SENDER_EMAIL_ADDRESS, SENDER_EMAIL_PASSWORD, SEND_TO_EMAIL_ADDRESS
 
 logging.basicConfig(
     level=logging.INFO,

@@ -1,4 +1,4 @@
-from scrapers import DaySmartAuth, DaySmartSchedule
+from src.app.scrapers import DaySmartAuth, DaySmartSchedule
 
 
 class DaySmartService:

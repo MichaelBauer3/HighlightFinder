@@ -1,18 +1,15 @@
 import logging
 import sys
 import time
-from datetime import datetime
 
-from selenium.common import TimeoutException
-
-from data_model.game_context import GameContext
+from src.app.data_model.game_context import GameContext
 from schedule_reader import ScheduleReader
-from scrapers import LiveBarnAuth, LiveBarnVideo
-from config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, RECORDINGS_DIR, FIELD_CONFIGS
-from scrapers.driver_manager import DriverManager
-from services.live_barn_service import LiveBarnService
-from services.video_service import VideoService
-from video import ScreenRecorder, ScoreboardFinder, ScoreboardReader, VideoLoader, ScoreValidator
+from src.app.scrapers import LiveBarnAuth, LiveBarnVideo
+from config.config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, RECORDINGS_DIR, FIELD_CONFIGS
+from src.app.scrapers.driver_manager import DriverManager
+from src.app.services.live_barn_service import LiveBarnService
+from src.app.services.video_service import VideoService
+from src.app.video import ScreenRecorder, ScoreboardFinder, ScoreboardReader, VideoLoader, ScoreValidator
 
 
 def main():

@@ -1,4 +1,4 @@
-from scrapers import LiveBarnAuth, LiveBarnVideo
+from src.app.scrapers import LiveBarnAuth, LiveBarnVideo
 
 
 class LiveBarnService:

@@ -8,8 +8,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from scrapers.driver_manager import DriverManager
-from services.day_smart_service import DaySmartService
+from src.app.scrapers.driver_manager import DriverManager
+from src.app.services.day_smart_service import DaySmartService
 
 logging.basicConfig(
     level=logging.INFO,
@@ -21,8 +21,8 @@ logger = logging.getLogger(__name__)
 
 def fetch_schedule():
     """Fetch schedule using Selenium"""
-    from scrapers import DaySmartAuth, DaySmartSchedule
-    from config import TEAMS
+    from src.app.scrapers import DaySmartAuth, DaySmartSchedule
+    from config.config import TEAMS
 
     email = os.getenv('EMAIL_ADDRESS')
     password = os.getenv('PASSWORD')
@@ -58,7 +58,7 @@ def fetch_schedule():
         }
 
         # Save to JSON file in repository root
-        output_path = Path('schedule_data.json')
+        output_path = Path('../data/metadata/schedule_cache.json')
         with open(output_path, 'w') as f:
             json.dump(schedule_data, f, indent=2)
 
@@ -79,7 +79,7 @@ def fetch_schedule():
             'error': str(e)
         }
 
-        with open('schedule_data.json', 'w') as f:
+        with open('../data/metadata/schedule_cache.json', 'w') as f:
             json.dump(error_data, f, indent=2)
 
         raise

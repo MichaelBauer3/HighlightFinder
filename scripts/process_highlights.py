@@ -1,16 +1,16 @@
 import logging
 import sys
 
-from clip_exporter.drive_runner import DriveRunner
-from data_model.game_context import GameContext
-from clip_exporter.email_sender import EmailSender
-from data_model.score_region import ScoreRegion
+from app.clip_exporter.drive_runner import DriveRunner
+from src.app.data_model.game_context import GameContext
+from app.clip_exporter.email_sender import EmailSender
+from src.app.data_model.score_region import ScoreRegion
 from schedule_reader import ScheduleReader
-from config import FIELD_CONFIGS, CLIPS_DIR, RECORDINGS_DIR, METADATA_DIR
-from services.clip_exporter_service import ClipExporterService
-from video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
-from video.scoreboard_finder import ScoreboardFinder
-from services.video_service import VideoService
+from config.config import FIELD_CONFIGS, CLIPS_DIR, RECORDINGS_DIR, METADATA_DIR
+from src.app.services.clip_exporter_service import ClipExporterService
+from src.app.video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
+from src.app.video import ScoreboardFinder
+from src.app.services.video_service import VideoService
 
 
 def main():
@@ -49,7 +49,14 @@ def main():
     for game in games:
 
         # Uncomment for testing
-        #game['field'] = "East Field"
+        """game['field'] = "West Field"
+        game['time'] = "06:30"
+        game['opponent'] = 'cougars'
+        game['team'] = 'ewoks fc'
+        game["game_year"] = "2026",
+        game["game_month"] = "04",
+        game["game_day"] = "9",
+        game["date"] = "2026-04-09"""
 
         game_context = GameContext.from_game(game, FIELD_CONFIGS)
         template_path = METADATA_DIR / game_context.field['template_path']

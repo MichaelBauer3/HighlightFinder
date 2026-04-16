@@ -58,23 +58,18 @@ FIELD_CONFIGS = {
                 "h": 22
             },
             "home_score_region": {
-                "x": -17,
-                "y": -3,
-                "width": 4,
-                "height": 7
+                "x": 2,
+                "y": 6,
+                "width": 10,
+                "height": 12
             },
             "away_score_region": {
-                "x": 18,
-                "y": -3,
-                "width": 4,
-                "height": 7
+                "x": 2,
+                "y": 6,
+                "width": 10,
+                "height": 12
             },
-            "nested_offset" : {
-                "dx": 25,
-                "dy": -4,
-            }
         },
-        # Current setup has anchor at (0, 15)
         "rotation_angle": 36,
         "template_path": "templates/west/west_field_template.png",
         "score_anchor_template_path": "templates/west/west_scoreboard.png",
@@ -94,23 +89,18 @@ FIELD_CONFIGS = {
                 "h": 22
             },
             "home_score_region": {
-                "x": -18,
-                "y": -2,
-                "width": 4,
-                "height": 7
+                "x": 2,
+                "y": 6,
+                "width": 10,
+                "height": 12
             },
             "away_score_region": {
-                "x": 17,
-                "y": -2,
-                "width": 4,
-                "height": 7
-            },
-            "nested_offset" : {
-                "dx": 25,
-                "dy": -6
+                "x": 36,
+                "y": 6,
+                "width": 10,
+                "height": 12
             }
         },
-        # Current setup has anchor at (0, 17)
         "rotation_angle": -30,
         "template_path": "templates/east/east_field_template.png",
         "score_anchor_template_path": "templates/east/east_scoreboard.png",
@@ -126,7 +116,7 @@ VIDEO_WIDTH = 1920
 VIDEO_HEIGHT = 1080
 
 # Paths
-ROOT_DIR = Path(SCRIPT_DIR)
+ROOT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT_DIR / "data"
 RECORDINGS_DIR = DATA_DIR / "recordings"
 CLIPS_DIR = DATA_DIR / "clips"
