@@ -25,8 +25,8 @@ data/recordings/*.avi
 !data/recordings/.gitkeep
 !data/clips/.gitkeep
 !data/metadata/.gitkeep
-!data/raw/.gitkeep
-!data/labeled/.gitkeep
+!data/digits/raw/.gitkeep
+!data/digits/labeled/.gitkeep
 
 src/app/ml/*.keras
 src/app/ml/*.tflite

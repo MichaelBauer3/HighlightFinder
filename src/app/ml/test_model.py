@@ -6,7 +6,7 @@ import tensorflow as tf
 from config.config import ML_DIR
 
 
-def test_random_samples_tflite(interpreter, dataset_root="../dataset_digits_test", num_samples=10):
+def test_random_samples_tflite(interpreter, dataset_root="../../../data/digits/labeled", num_samples=10):
     """
     Test a TFLite model against random samples from the dataset.
     """
@@ -59,7 +59,7 @@ def main():
     interpreter = tf.lite.Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 
-    test_random_samples_tflite(interpreter, dataset_root="../data/labeled", num_samples=2000)
+    test_random_samples_tflite(interpreter, dataset_root="../../../data/digits/labeled", num_samples=2000)
 
 
 if __name__ == "__main__":

@@ -117,12 +117,16 @@ VIDEO_HEIGHT = 1080
 
 # Paths
 ROOT_DIR = Path(__file__).resolve().parent.parent
+SRC_DIR = ROOT_DIR / "src"
+APP_DIR = SRC_DIR / "app"
+
 DATA_DIR = ROOT_DIR / "data"
 RECORDINGS_DIR = DATA_DIR / "recordings"
 CLIPS_DIR = DATA_DIR / "clips"
 METADATA_DIR = DATA_DIR / "metadata"
 LOGS_DIR = ROOT_DIR / "logs"
-ML_DIR = ROOT_DIR / "ml"
+
+ML_DIR = APP_DIR / "ml"
 
 for directory in [RECORDINGS_DIR, CLIPS_DIR, METADATA_DIR, LOGS_DIR]:
     directory.mkdir(parents=True, exist_ok=True)

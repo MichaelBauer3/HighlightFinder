@@ -2,7 +2,7 @@ import tensorflow as tf
 from keras import layers
 from tensorflow import keras
 
-DATA_DIR = "../../../data/labeled"
+DATA_DIR = "../../../data/digits/labeled"
 MODEL_NAME = "digit_model"
 
 # -----------------------------
