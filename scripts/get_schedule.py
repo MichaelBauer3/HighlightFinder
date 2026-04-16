@@ -8,8 +8,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from src.app.scrapers.driver_manager import DriverManager
-from src.app.services.day_smart_service import DaySmartService
+from app.scrapers.driver_manager import DriverManager
+from app.services.day_smart_service import DaySmartService
 
 logging.basicConfig(
     level=logging.INFO,
