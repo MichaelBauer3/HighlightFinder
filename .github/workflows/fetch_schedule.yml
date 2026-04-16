@@ -74,6 +74,7 @@ jobs:
         env:
           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          PYTHONPATH: .
         run: |
           python scripts/get_schedule.py
 
