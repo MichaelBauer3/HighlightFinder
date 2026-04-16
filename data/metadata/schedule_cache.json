@@ -17,6 +17,22 @@
       "game_month": "04",
       "game_day": "19",
       "game_month_and_year": "April 2026"
+    },
+    {
+      "team": "ewoks united",
+      "opponent": "not so hot spurs",
+      "datetime": "2026-04-16T18:00:00",
+      "date": "2026-04-16",
+      "time": "6:00",
+      "day_of_week": "Thursday",
+      "field": "East Field",
+      "location": "Rochester Sports Garden: East Field",
+      "is_home": true,
+      "display_time": "6:00pm - 6:50pm",
+      "game_year": "2026",
+      "game_month": "04",
+      "game_day": "16",
+      "game_month_and_year": "April 2026"
     }
   ],
   "status": "success",
