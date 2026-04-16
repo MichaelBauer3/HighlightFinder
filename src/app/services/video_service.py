@@ -3,9 +3,9 @@ from pathlib import Path
 
 from numpy import ndarray
 
-from src.app.data_model.game_context import GameContext
-from src.app.data_model.score_region import ScoreRegion
-from src.app.video import ScoreboardFinder, ScoreboardReader, VideoLoader, ScreenRecorder, ScoreValidator
+from app.data_model.game_context import GameContext
+from app.data_model.score_region import ScoreRegion
+from app.video import ScoreboardFinder, ScoreboardReader, VideoLoader, ScreenRecorder, ScoreValidator
 
 logger = logging.getLogger(__name__)
 

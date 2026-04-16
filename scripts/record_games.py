@@ -2,14 +2,14 @@ import logging
 import sys
 import time
 
-from src.app.data_model.game_context import GameContext
+from app.data_model.game_context import GameContext
 from schedule_reader import ScheduleReader
-from src.app.scrapers import LiveBarnAuth, LiveBarnVideo
+from app.scrapers import LiveBarnAuth, LiveBarnVideo
 from app.config.config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, RECORDINGS_DIR, FIELD_CONFIGS
-from src.app.scrapers.driver_manager import DriverManager
-from src.app.services.live_barn_service import LiveBarnService
-from src.app.services.video_service import VideoService
-from src.app.video import ScreenRecorder, ScoreboardFinder, ScoreboardReader, VideoLoader, ScoreValidator
+from app.scrapers.driver_manager import DriverManager
+from app.services.live_barn_service import LiveBarnService
+from app.services.video_service import VideoService
+from app.video import ScreenRecorder, ScoreboardFinder, ScoreboardReader, VideoLoader, ScoreValidator
 
 
 def main():

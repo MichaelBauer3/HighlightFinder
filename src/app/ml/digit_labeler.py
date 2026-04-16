@@ -4,8 +4,8 @@ from pathlib import Path
 import cv2
 import time
 
-from src.app.video import VideoLoader
-from src.app.video.scoreboard_finder import ScoreboardFinder
+from app.video import VideoLoader
+from app.video.scoreboard_finder import ScoreboardFinder
 from app.config.config import FIELD_CONFIGS, METADATA_DIR, DATA_DIR
 
 ROOT_DIR = Path(__file__).parent.parent

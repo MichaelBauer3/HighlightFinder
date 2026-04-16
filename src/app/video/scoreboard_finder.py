@@ -5,7 +5,7 @@ import logging
 
 import numpy as np
 
-from src.app.data_model.score_region import ScoreRegion
+from app.data_model.score_region import ScoreRegion
 
 logger = logging.getLogger(__name__)
 
