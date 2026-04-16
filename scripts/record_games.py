@@ -5,7 +5,7 @@ import time
 from src.app.data_model.game_context import GameContext
 from schedule_reader import ScheduleReader
 from src.app.scrapers import LiveBarnAuth, LiveBarnVideo
-from config.config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, RECORDINGS_DIR, FIELD_CONFIGS
+from app.config.config import LIVE_BARN_EMAIL, LIVE_BARN_PASSWORD, RECORDINGS_DIR, FIELD_CONFIGS
 from src.app.scrapers.driver_manager import DriverManager
 from src.app.services.live_barn_service import LiveBarnService
 from src.app.services.video_service import VideoService

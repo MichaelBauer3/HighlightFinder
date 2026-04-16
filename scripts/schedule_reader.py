@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 import sys
 
-from config.config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH, LOGS_DIR
+from app.config.config import GITHUB_USERNAME, GITHUB_REPO, GITHUB_BRANCH, LOGS_DIR
 
 log_path = os.path.join(LOGS_DIR, "laptop_scheduler.log")
 logging.basicConfig(

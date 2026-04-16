@@ -1,7 +1,7 @@
 # .gitignore
 
 # Credentials
-config/local_settings.json
+src/app/config/local_settings.json
 .env
 *.env
 

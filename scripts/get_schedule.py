@@ -10,6 +10,7 @@ from pathlib import Path
 
 from app.scrapers.driver_manager import DriverManager
 from app.services.day_smart_service import DaySmartService
+from app.config.config import METADATA_DIR
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,11 +19,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 def fetch_schedule():
     """Fetch schedule using Selenium"""
-    from src.app.scrapers import DaySmartAuth, DaySmartSchedule
-    from config.config import TEAMS
+    from app.scrapers import DaySmartAuth, DaySmartSchedule
+    from app.config.config import TEAMS
 
     email = os.getenv('EMAIL_ADDRESS')
     password = os.getenv('PASSWORD')
@@ -58,7 +58,7 @@ def fetch_schedule():
         }
 
         # Save to JSON file in repository root
-        output_path = Path('../data/metadata/schedule_cache.json')
+        output_path = METADATA_DIR / "schedule_cache.json"
         with open(output_path, 'w') as f:
             json.dump(schedule_data, f, indent=2)
 
@@ -79,7 +79,8 @@ def fetch_schedule():
             'error': str(e)
         }
 
-        with open('../data/metadata/schedule_cache.json', 'w') as f:
+        output_path = METADATA_DIR / "schedule_cache.json"
+        with open(output_path, 'w') as f:
             json.dump(error_data, f, indent=2)
 
         raise

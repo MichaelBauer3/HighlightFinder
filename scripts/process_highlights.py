@@ -6,7 +6,7 @@ from src.app.data_model.game_context import GameContext
 from app.clip_exporter.email_sender import EmailSender
 from src.app.data_model.score_region import ScoreRegion
 from schedule_reader import ScheduleReader
-from config.config import FIELD_CONFIGS, CLIPS_DIR, RECORDINGS_DIR, METADATA_DIR
+from app.config.config import FIELD_CONFIGS, CLIPS_DIR, RECORDINGS_DIR, METADATA_DIR
 from src.app.services.clip_exporter_service import ClipExporterService
 from src.app.video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
 from src.app.video import ScoreboardFinder

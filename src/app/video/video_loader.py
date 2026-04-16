@@ -6,7 +6,7 @@ import cv2
 import logging
 import glob
 
-from config.config import RECORDINGS_DIR, CLIPS_DIR
+from app.config.config import RECORDINGS_DIR, CLIPS_DIR
 from src.app.data_model.game_context import GameContext
 
 logger = logging.getLogger(__name__)

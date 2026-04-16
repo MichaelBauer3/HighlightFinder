@@ -12,7 +12,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-from config.config import GOOGLE_FOLDER_ID, GOOGLE_CREDENTIALS_PATH, GOOGLE_TOKEN_PATH, SCRIPT_DIR
+from app.config.config import GOOGLE_FOLDER_ID, GOOGLE_CREDENTIALS_PATH, GOOGLE_TOKEN_PATH, SCRIPT_DIR
 
 logging.basicConfig(
     level=logging.INFO,

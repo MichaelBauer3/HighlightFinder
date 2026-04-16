@@ -6,7 +6,7 @@ import time
 
 from src.app.video import VideoLoader
 from src.app.video.scoreboard_finder import ScoreboardFinder
-from config.config import FIELD_CONFIGS, METADATA_DIR, DATA_DIR
+from app.config.config import FIELD_CONFIGS, METADATA_DIR, DATA_DIR
 
 ROOT_DIR = Path(__file__).parent.parent
 VIDEO_PATH = ROOT_DIR / "data/recordings/east_6-8-23daysago_20260305.mp4"

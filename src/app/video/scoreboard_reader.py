@@ -4,7 +4,7 @@ import os
 import tensorflow as tf
 import numpy as np
 
-from config.config import ML_DIR
+from app.config.config import ML_DIR
 
 logger = logging.getLogger(__name__)
 

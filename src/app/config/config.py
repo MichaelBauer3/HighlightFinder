@@ -116,7 +116,7 @@ VIDEO_WIDTH = 1920
 VIDEO_HEIGHT = 1080
 
 # Paths
-ROOT_DIR = Path(__file__).resolve().parent.parent
+ROOT_DIR = Path(__file__).resolve().parents[3]
 SRC_DIR = ROOT_DIR / "src"
 APP_DIR = SRC_DIR / "app"
 

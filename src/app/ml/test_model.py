@@ -3,7 +3,7 @@ import random
 import numpy as np
 import tensorflow as tf
 
-from config.config import ML_DIR
+from app.config.config import ML_DIR
 
 
 def test_random_samples_tflite(interpreter, dataset_root="../../../data/digits/labeled", num_samples=10):
