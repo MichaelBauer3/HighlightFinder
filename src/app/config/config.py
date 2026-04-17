@@ -58,21 +58,20 @@ FIELD_CONFIGS = {
                 "h": 22
             },
             "home_score_region": {
-                "x": 2,
+                "x": 1,
                 "y": 6,
-                "width": 10,
+                "width": 12,
                 "height": 12
             },
             "away_score_region": {
-                "x": 2,
+                "x": 37,
                 "y": 6,
-                "width": 10,
+                "width": 12,
                 "height": 12
             },
         },
         "rotation_angle": 36,
         "template_path": "templates/west/west_field_template.png",
-        "score_anchor_template_path": "templates/west/west_scoreboard.png",
     },
     "East Field": {
         "name": "East Field (Top Right)",
@@ -89,21 +88,20 @@ FIELD_CONFIGS = {
                 "h": 22
             },
             "home_score_region": {
-                "x": 2,
+                "x": 1,
                 "y": 6,
-                "width": 10,
+                "width": 12,
                 "height": 12
             },
             "away_score_region": {
-                "x": 36,
+                "x": 37,
                 "y": 6,
-                "width": 10,
+                "width": 12,
                 "height": 12
             }
         },
         "rotation_angle": -30,
-        "template_path": "templates/east/east_field_template.png",
-        "score_anchor_template_path": "templates/east/east_scoreboard.png",
+        "template_path": "templates/east/east_field_template.png"
     }
 }
 
@@ -122,6 +120,7 @@ APP_DIR = SRC_DIR / "app"
 
 DATA_DIR = ROOT_DIR / "data"
 RECORDINGS_DIR = DATA_DIR / "recordings"
+DIGITS_DIR = DATA_DIR / "digits"
 CLIPS_DIR = DATA_DIR / "clips"
 METADATA_DIR = DATA_DIR / "metadata"
 LOGS_DIR = ROOT_DIR / "logs"

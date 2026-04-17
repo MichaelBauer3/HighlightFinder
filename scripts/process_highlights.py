@@ -60,7 +60,6 @@ def main():
 
         game_context = GameContext.from_game(game, FIELD_CONFIGS)
         template_path = METADATA_DIR / game_context.field['template_path']
-        anchor_template_path = METADATA_DIR / game_context.field['score_anchor_template_path']
 
         # Check if recording exists
         if not (RECORDINGS_DIR / game_context.file_name).exists():
@@ -77,7 +76,7 @@ def main():
 
         logging.info(f"Processing video: {game_context.file_name}")
 
-        video_service.set_template(template_path, anchor_template_path)
+        video_service.set_template(template_path)
 
         digit_region = ScoreRegion.HOME if game_context.is_home else ScoreRegion.AWAY
 
@@ -101,7 +100,7 @@ def main():
 
                 # Get score from data_model
                 score = video_service.get_score(digit_processed)
-
+                print(score)
                 # Validate score
                 is_valid_score, real_score = video_service.validate_score(score)
 

@@ -6,10 +6,9 @@ import time
 
 from app.video import VideoLoader
 from app.video.scoreboard_finder import ScoreboardFinder
-from app.config.config import FIELD_CONFIGS, METADATA_DIR, DATA_DIR
+from app.config.config import FIELD_CONFIGS, METADATA_DIR, RECORDINGS_DIR, DIGITS_DIR
 
-ROOT_DIR = Path(__file__).parent.parent
-VIDEO_PATH = ROOT_DIR / "data/recordings/east_6-8-23daysago_20260305.mp4"
+VIDEO_PATH = RECORDINGS_DIR / "ewoks_united_vs_not_so_hot_spurs_20260416.mp4"
 FIELD = "East Field"
 
 # Get both regions
@@ -18,7 +17,7 @@ AWAY_REGION = FIELD_CONFIGS[FIELD]["scoreboard_region"]["away_score_region"]
 ROTATION = FIELD_CONFIGS[FIELD]['rotation_angle']
 
 # Output dir
-OUTPUT_DIR = DATA_DIR / "raw"
+OUTPUT_DIR = DIGITS_DIR / "raw"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
@@ -27,8 +26,7 @@ def main():
     finder = ScoreboardFinder()
 
     scoreboard_template = METADATA_DIR / FIELD_CONFIGS[FIELD]['template_path']
-    anchor_template = METADATA_DIR / FIELD_CONFIGS[FIELD]['score_anchor_template_path']
-    finder.set_template(scoreboard_template, anchor_template)
+    finder.set_template(scoreboard_template)
 
     field_config = FIELD_CONFIGS[FIELD]
 

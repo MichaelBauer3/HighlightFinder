@@ -17,7 +17,7 @@ class ScoreboardFinder:
         self.score_anchor_template = None
         self._fixed_region = None
 
-    def set_template(self, template_path: Path, anchor_template_path: Path):
+    def set_template(self, template_path: Path):
 
         if template_path.exists():
 
@@ -27,15 +27,6 @@ class ScoreboardFinder:
                 raise ValueError(f"Failed to load image: {template_path}")
 
             self.scoreboard_template = cv2.cvtColor(template_img, cv2.COLOR_BGR2GRAY)
-
-        if anchor_template_path.exists():
-
-            anchor_img = cv2.imread(str(anchor_template_path))
-
-            if anchor_img is None:
-                raise ValueError(f"Failed to load image: {anchor_template_path}")
-
-            self.score_anchor_template = cv2.cvtColor(anchor_img, cv2.COLOR_BGR2GRAY)
 
     def get_scoreboard(
             self,
@@ -146,7 +137,7 @@ class ScoreboardFinder:
         gray: np.ndarray = cv2.normalize(gray, None, 0, 255, cv2.NORM_MINMAX)
 
         upscaled = cv2.resize(gray, (0, 0), fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
-        _, cleaned = cv2.threshold(upscaled, 120, 255, cv2.THRESH_TOZERO)
+        _, cleaned = cv2.threshold(upscaled, 150, 255, cv2.THRESH_TOZERO)
 
         pad = 10
         padded = cv2.copyMakeBorder(
