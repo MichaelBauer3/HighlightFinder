@@ -43,8 +43,8 @@ class VideoService:
     def delete_video(self, file_name: str) -> bool:
         return self.video_loader.delete_video(file_name)
 
-    def set_template(self, template_path: Path, anchor_template: Path):
-        self.scoreboard_finder.set_template(template_path, anchor_template)
-
     def _reset_score_validator_after_game(self):
         self.score_validator.reset_after_game()
+        
+    def set_template(self, template_path: Path):
+        self.scoreboard_finder.set_template(template_path)
