@@ -99,7 +99,7 @@ def main():
                 if digit_processed is None:
                     continue
 
-                # Get score from data_model
+                # Get score from ml model
                 score = video_service.get_score(digit_processed)
 
                 # Validate score
@@ -114,11 +114,15 @@ def main():
             logging.info(f"Processing complete: {game_context.file_name}, found {goals_found} goals")
 
             # Send Google Drive Upload Link
-            link = clip_exporter_service.upload_folder(clip_subdir)
-            clip_exporter_service.send_highlights(folder_paths, link)
+            if goals_found > 0:
+                link = clip_exporter_service.upload_folder(clip_subdir)
+                clip_exporter_service.send_highlights(folder_paths, link)
 
         except Exception as e:
             logging.error(f"Failed to process {game_context.file_name}: {e}")
+
+        finally:
+            video_service.reset_after_game()
 
 if __name__ == "__main__":
     main()
