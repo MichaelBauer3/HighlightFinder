@@ -33,6 +33,22 @@
       "game_month": "04",
       "game_day": "16",
       "game_month_and_year": "April 2026"
+    },
+    {
+      "team": "ewoks fc",
+      "opponent": "sugandese fc",
+      "datetime": "2026-04-16T20:30:00",
+      "date": "2026-04-16",
+      "time": "8:30",
+      "day_of_week": "Thursday",
+      "field": "West Field",
+      "location": "Rochester Sports Garden: West Field",
+      "is_home": true,
+      "display_time": "8:30pm - 9:20pm",
+      "game_year": "2026",
+      "game_month": "04",
+      "game_day": "16",
+      "game_month_and_year": "April 2026"
     }
   ],
   "status": "success",
