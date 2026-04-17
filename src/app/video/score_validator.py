@@ -56,3 +56,10 @@ class ScoreValidator:
     def _reset_candidate(self):
         self.current_candidate = None
         self.frames_stable = 0
+
+    def reset_after_game(self):
+        self.max_increment = 1
+        self.last_valid_score = -1
+        self.current_candidate = None
+        self.frames_stable = 0
+        self.initialized = False
