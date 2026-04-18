@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from datetime import timedelta, datetime, UTC
+from datetime import timedelta, datetime, UTC, timezone
 from pathlib import Path
 
 
@@ -72,7 +72,6 @@ class DriveRunner:
     def cleanup_old_folders(self, days_old: int=3) -> None:
         """Delete old folders inside the Game_Highlights folder"""
 
-        cutoff = datetime.now(UTC) - timedelta(days=days_old)
         query = f"'{GOOGLE_FOLDER_ID}' in parents and mimeType = 'application/vnd.google-apps.folder'"
 
         results = self.service.files().list(
@@ -81,7 +80,8 @@ class DriveRunner:
         ).execute()
 
         for folder in results.get('files', []):
-            created = datetime.fromisoformat(folder['createdTime'].replace('Z', ''))
+            created = datetime.fromisoformat(folder['createdTime'].replace('Z', '+00:00'))
+            cutoff = datetime.now(timezone.utc) - timedelta(days=days_old)
             if created < cutoff:
                 self.service.files().delete(fileId=folder['id']).execute()
                 logging.info(f"Deleted folder: {folder['name']}")
