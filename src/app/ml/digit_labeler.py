@@ -8,8 +8,8 @@ from app.video import VideoLoader
 from app.video.scoreboard_finder import ScoreboardFinder
 from app.config.config import FIELD_CONFIGS, METADATA_DIR, RECORDINGS_DIR, DIGITS_DIR
 
-VIDEO_PATH = RECORDINGS_DIR / "ewoks_united_vs_not_so_hot_spurs_20260416.mp4"
-FIELD = "East Field"
+VIDEO_PATH = RECORDINGS_DIR / "ewoks_fc_vs_sugandese_fc_20260416.mp4"
+FIELD = "West Field"
 
 # Get both regions
 HOME_REGION = FIELD_CONFIGS[FIELD]["scoreboard_region"]["home_score_region"]

@@ -48,3 +48,6 @@ class VideoService:
         
     def set_template(self, template_path: Path):
         self.scoreboard_finder.set_template(template_path)
+
+    def reset_after_game(self):
+        self.score_validator.reset_after_game()

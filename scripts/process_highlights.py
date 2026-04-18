@@ -1,5 +1,7 @@
+import argparse
 import logging
 import sys
+from datetime import datetime
 
 from app.clip_exporter.drive_runner import DriveRunner
 from app.data_model.game_context import GameContext
@@ -13,81 +15,70 @@ from app.video import ScoreboardFinder
 from app.services.video_service import VideoService
 
 
-def main():
+def build_game_from_args(arguments) -> dict:
+    return {
+        "team": arguments.team,
+        "opponent": arguments.opponent,
+        "field": arguments.field,
+        "date": f"{arguments.date[:4]}-{arguments.date[4:6]}-{arguments.date[6:]}",
+        "game_day": arguments.date[6:],
+        "game_month": arguments.date[4:6],
+        "game_year": arguments.date[:4],
+        "is_home": arguments.is_home,
+        "datetime": datetime.now().isoformat()
+    }
+
+
+def main(games=None, reprocess=False):
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[logging.StreamHandler(sys.stdout)]
     )
 
-    schedule_reader = ScheduleReader()
-    games = schedule_reader.fetch_schedule_from_github()
+    if games is None:
+        schedule_reader = ScheduleReader()
+        games = schedule_reader.fetch_schedule_from_github()
 
     sender = EmailSender()
     drive_runner = DriveRunner()
 
-    scoreboard_finder = ScoreboardFinder()
-    scoreboard_reader = ScoreboardReader()
-    video_loader = VideoLoader()
-    score_validator = ScoreValidator()
-    screen_recorder = ScreenRecorder()
-
     video_service = VideoService(
-        scoreboard_finder,
-        scoreboard_reader,
-        screen_recorder,
-        video_loader,
-        score_validator
+        ScoreboardFinder(),
+        ScoreboardReader(),
+        ScreenRecorder(),
+        VideoLoader(),
+        ScoreValidator()
     )
 
-    clip_exporter_service = ClipExporterService(
-        drive_runner,
-        sender
-    )
+    clip_exporter_service = ClipExporterService(drive_runner, sender)
 
     folder_paths = []
-    for game in games:
-
-        # Uncomment for testing
-        """game['field'] = "West Field"
-        game['time'] = "06:30"
-        game['opponent'] = 'cougars'
-        game['team'] = 'ewoks fc'
-        game["game_year"] = "2026",
-        game["game_month"] = "04",
-        game["game_day"] = "9",
-        game["date"] = "2026-04-09"""
-
-        game_context = GameContext.from_game(game, FIELD_CONFIGS)
+    for gm in games:
+        game_context = GameContext.from_game(gm, FIELD_CONFIGS)
         template_path = METADATA_DIR / game_context.field['template_path']
 
-        # Check if recording exists
         if not (RECORDINGS_DIR / game_context.file_name).exists():
             logging.warning(f"Recording not found: {game_context.file_name}, skipping")
             continue
 
-        # Check if already processed
         clip_subdir = CLIPS_DIR / game_context.clip_folder_name()
         folder_paths.append(clip_subdir)
-        existing_goals = list(clip_subdir.glob(f"goal_*_{game_context.team_name}_{game_context.game_date}.mp4"))
-        if existing_goals:
+
+        existing_goals = list(clip_subdir.glob(
+            f"goal_*_{game_context.team_name}_{game_context.game_date}.mp4"
+        ))
+        if existing_goals and not reprocess:
             logging.info(f"Already processed: {game_context.file_name}, skipping")
             continue
 
         logging.info(f"Processing video: {game_context.file_name}")
-
         video_service.set_template(template_path)
-
         digit_region = ScoreRegion.HOME if game_context.is_home else ScoreRegion.AWAY
-
-        # Process video
-        sample_rate = 1
         goals_found = 0
 
         try:
-            for timestamp, frame in video_service.stream_frames(game_context.file_name, sample_rate):
-
-                # Process frame
+            for timestamp, frame in video_service.stream_frames(game_context.file_name, sample_rate=1):
                 digit_processed = video_service.get_digit_region(
                     frame,
                     game_context.field,
@@ -98,13 +89,9 @@ def main():
                 if digit_processed is None:
                     continue
 
-                # Get score from ml model
                 score = video_service.get_score(digit_processed)
-                print(score)
-                # Validate score
                 is_valid_score, real_score = video_service.validate_score(score)
 
-                # If valid, clip and save
                 if is_valid_score:
                     video_service.clip_goal(game_context, real_score, timestamp - 30, 30)
                     goals_found += 1
@@ -112,7 +99,6 @@ def main():
 
             logging.info(f"Processing complete: {game_context.file_name}, found {goals_found} goals")
 
-            # Send Google Drive Upload Link
             if goals_found > 0:
                 link = clip_exporter_service.upload_folder(clip_subdir)
                 clip_exporter_service.send_highlights(folder_paths, link)
@@ -123,5 +109,20 @@ def main():
         finally:
             video_service.reset_after_game()
 
+
 if __name__ == "__main__":
-    main()
+
+    if len(sys.argv) > 1:
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--team", type=str, required=True)
+        parser.add_argument("--opponent", type=str, required=True)
+        parser.add_argument("--field", type=str, choices=["East Field", "West Field"], required=True)
+        parser.add_argument("--date", type=str, required=True, help="e.g. 20260416")
+        parser.add_argument("--is-home", required=True, default=False)
+        parser.add_argument("--reprocess", required=True, help="Skip already processed check", default=True)
+
+        args = parser.parse_args()
+        game = build_game_from_args(args)
+        main(games=[game], reprocess=args.reprocess)
+    else:
+        main()

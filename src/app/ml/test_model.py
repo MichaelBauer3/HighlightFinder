@@ -2,6 +2,7 @@ import os
 import random
 import numpy as np
 import tensorflow as tf
+from ai_edge_litert.interpreter import Interpreter
 
 from app.config.config import ML_DIR
 
@@ -56,7 +57,7 @@ def test_random_samples_tflite(interpreter, dataset_root="../../../data/digits/l
 def main():
     model_path = os.path.join(ML_DIR, "digit_model.tflite")
 
-    interpreter = tf.lite.Interpreter(model_path=model_path)
+    interpreter = Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 
     test_random_samples_tflite(interpreter, dataset_root="../../../data/digits/labeled", num_samples=2000)

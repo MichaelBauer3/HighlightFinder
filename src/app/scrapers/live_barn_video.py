@@ -252,13 +252,12 @@ class LiveBarnVideo:
         """
 
         try:
-            # 1. Wait for the video to actually be 'ready' to receive events
+            # Wait for the video to actually be 'ready' to receive events
             self.wait.until(ec.presence_of_element_located((By.TAG_NAME, "video")))
 
-            # 2. Run the persistent 'shaker and clicker' script
+            # Run the script
             self.driver.execute_script(force_ui_script)
 
-            # 3. Verification: Optional but recommended
             # Wait a moment and check if the 'Fullscreen' state was actually achieved
             time.sleep(1.5)
             logger.info("Sequence finished. Scoreboard should now be Fullscreen Pano.")

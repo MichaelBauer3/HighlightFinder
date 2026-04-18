@@ -1,10 +1,10 @@
 import logging
 import os
 
-import tensorflow as tf
 import numpy as np
 
 from app.config.config import ML_DIR
+from ai_edge_litert.interpreter import Interpreter
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ class ScoreboardReader:
 
     def __init__(self):
         model_path = os.path.join(ML_DIR, "digit_model.tflite")
-        self.interpreter = tf.lite.Interpreter(model_path=model_path)
+        self.interpreter = Interpreter(model_path=model_path)
         self.interpreter.allocate_tensors()
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()

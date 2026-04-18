@@ -1,7 +1,9 @@
 import logging
 import sys
 import time
+import argparse
 
+from datetime import datetime
 from app.data_model.game_context import GameContext
 from schedule_reader import ScheduleReader
 from app.scrapers import LiveBarnAuth, LiveBarnVideo
@@ -11,16 +13,37 @@ from app.services.live_barn_service import LiveBarnService
 from app.services.video_service import VideoService
 from app.video import ScreenRecorder, ScoreboardFinder, ScoreboardReader, VideoLoader, ScoreValidator
 
+def build_game_from_args(arguments) -> dict:
 
-def main():
+    date_str = f"{arguments.year}-{arguments.month:02d}-{arguments.day:02d}"
+    date = datetime.strptime(f"{date_str} {arguments.time}", "%Y-%m-%d %H:%M")
+    month_and_year =  date.strftime("%B %Y")
+
+    return {
+        "team": arguments.team,
+        "opponent": arguments.opponent,
+        "field": arguments.field,
+        "time": arguments.time,
+        "date": date_str,
+        "game_day": str(arguments.day),
+        "game_month": f"{arguments.month:02d}",
+        "game_year": str(arguments.year),
+        "game_month_and_year": month_and_year,
+        "datetime": date.isoformat(),
+        "is_home": arguments.is_home
+    }
+
+
+def main(games=None, skip_occurred_check=False):
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[logging.StreamHandler(sys.stdout)]
     )
 
-    schedule_reader = ScheduleReader()
-    games = schedule_reader.fetch_schedule_from_github()
+    if games is None:
+        schedule_reader = ScheduleReader()
+        games = schedule_reader.fetch_schedule_from_github()
 
     if len(games) == 0:
         logging.info("No games scheduled")
@@ -47,19 +70,11 @@ def main():
             score_validator)
 
         live_barn_service.login()
-        for game in games:
+        for gm in games:
 
-            game_context = GameContext.from_game(game, FIELD_CONFIGS)
+            game_context = GameContext.from_game(gm, FIELD_CONFIGS)
 
-            # Uncomment these if ML data_model needs more data
-            """game['field'] = "East Field"
-            game['game_day'] = "12"
-            game['time'] = "8:00"
-            game['date'] = '2026-03-12'
-            game['game_month_and_year'] = "March 2026" """
-
-            # Comment out when testing
-            if not game_context.has_occurred():
+            if not skip_occurred_check and not game_context.has_occurred():
                 logging.info("Game has yet to occur")
                 continue
 
@@ -68,11 +83,11 @@ def main():
                 logging.info(f"Recording already exists: {game_context.file_name}, skipping")
                 continue
 
-            logging.info(f"Recording game: {game['team']} vs {game['opponent']}")
+            logging.info(f"Recording game: {gm['team']} vs {gm['opponent']}")
 
             try:
                 # navigate to video
-                live_barn_service.get_vod_video(game)
+                live_barn_service.get_vod_video(gm)
 
                 # Wait for video to load
                 time.sleep(10)
@@ -100,4 +115,22 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+
+    if len(sys.argv) > 1:
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--team", type=str, required=True)
+        parser.add_argument("--opponent", type=str, required=True)
+        parser.add_argument("--field", type=str, choices=["East Field", "West Field"], required=True)
+        parser.add_argument("--time", type=str, required=True, help="e.g. 6:00")
+        parser.add_argument("--day", type=int, required=True)
+        parser.add_argument("--month", type=int, required=True)
+        parser.add_argument("--year", type=int, default=2026)
+        parser.add_argument("--is-home", type=bool, default=False)
+        parser.add_argument("--skip-occurred-check", type=bool, default=False)
+
+        args = parser.parse_args()
+        game = build_game_from_args(args)
+        main(games=[game], skip_occurred_check=args.skip_occurred_check)
+
+    else:
+        main()
