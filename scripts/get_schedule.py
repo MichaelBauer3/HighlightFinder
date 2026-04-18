@@ -6,7 +6,6 @@ import logging
 import os
 import sys
 from datetime import datetime
-from pathlib import Path
 
 from app.scrapers.driver_manager import DriverManager
 from app.services.day_smart_service import DaySmartService

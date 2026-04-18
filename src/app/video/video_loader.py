@@ -1,11 +1,11 @@
 import os
 import subprocess
-from pathlib import Path
-
 import cv2
 import logging
 import glob
+import numpy as np
 
+from pathlib import Path
 from app.config.config import RECORDINGS_DIR, CLIPS_DIR
 from app.data_model.game_context import GameContext
 
@@ -42,41 +42,53 @@ class VideoLoader:
         logger.info(f"\tFPS: {self.fps:.2f}")
         logger.info(f"\tDuration: {self.duration / 60:.1f} minutes ({self.frame_count} frames)")
 
-    def frames_generator(self, file_name, sample_rate: int = 3):
-        """
-        Yield a frame approximately every `sample_rate` seconds.
-        """
-        logger.info(f"Processing video with sample rate: {sample_rate} seconds")
+    def frames_generator(self, file_name, sample_rate: int = 1):
 
         video_path = self._make_path(RECORDINGS_DIR, file_name)
 
         self._load_video_info(video_path)
 
-        cap = cv2.VideoCapture(str(video_path))
-        if not cap.isOpened():
-            raise ValueError(f"Could not open video: {video_path}")
+        fps = 1 / sample_rate
 
-        frame_interval = int(self.fps * sample_rate)
-        frame_num = 0
+        cmd = [
+            "ffmpeg",
+            "-i", str(video_path),
+            "-vf", f"fps={fps}",
+            "-f", "image2pipe",
+            "-pix_fmt", "bgr24",
+            "-vcodec", "rawvideo",
+            "-"
+        ]
+
+        pipe = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL
+        )
+
+        frame_size = self.width * self.height * 3
+
+        frame_index = 0
+
+        stdout = pipe.stdout
+        if stdout is None:
+            raise RuntimeError("Failed to open ffmpeg pipe")
 
         while True:
-            ret, frame = cap.read()
-            if not ret:
+            raw_frame = pipe.stdout.read(frame_size)
+            if len(raw_frame) != frame_size:
                 break
 
-            timestamp = frame_num / self.fps
+            frame = np.frombuffer(raw_frame, dtype=np.uint8)
+            frame = frame.reshape((self.height, self.width, 3))
 
-            if frame_num % frame_interval == 0:
-                yield timestamp, frame
+            timestamp = frame_index * sample_rate
+            yield timestamp, frame
 
-            frame_num += 1
+            frame_index += 1
 
-            if frame_num % (frame_interval * 100) == 0:
-                progress = (frame_num / self.frame_count) * 100
-                logger.info(f"  Progress: {progress:.1f}% ({timestamp / 60:.1f} min)")
-
-        cap.release()
-        logger.info(f"Processed {frame_num} frames")
+        pipe.stdout.close()
+        pipe.wait()
 
     def delete_video(self, file_name: str, all_files: bool = False):
         """Clean up the recordings folder"""
@@ -94,12 +106,16 @@ class VideoLoader:
     def _make_path(directory: str, file_name: str) -> Path:
         return Path(directory) / file_name
 
-    def clip_video(self, game_context: GameContext, real_score: int, start_time: int, duration: int) -> bool:
+    def clip_video(self,
+                   game_context: GameContext,
+                   real_score: int,
+                   start_time: int,
+                   duration: int,
+                   file_override: str = None
+    ) -> bool:
 
-        # Source Video
-        file_path = self._make_path(RECORDINGS_DIR, game_context.file_name)
+        file_path = self._make_path(RECORDINGS_DIR, file_override or game_context.file_name)
 
-        # Clip Folder
         clip_file_path = self._make_path(CLIPS_DIR, game_context.clip_folder_name())
 
         clip_file_path.mkdir(parents=True, exist_ok=True)

@@ -13,6 +13,9 @@ from app.services.clip_exporter_service import ClipExporterService
 from app.video import VideoLoader, ScoreboardReader, ScoreValidator, ScreenRecorder
 from app.video import ScoreboardFinder
 from app.services.video_service import VideoService
+from concurrent.futures import ThreadPoolExecutor
+
+executor = ThreadPoolExecutor(max_workers=3)
 
 
 def build_game_from_args(arguments) -> dict:
@@ -29,7 +32,7 @@ def build_game_from_args(arguments) -> dict:
     }
 
 
-def main(games=None, reprocess=False):
+def main(games=None, reprocess=False, file_override=None, send=True):
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -58,8 +61,9 @@ def main(games=None, reprocess=False):
         game_context = GameContext.from_game(gm, FIELD_CONFIGS)
         template_path = METADATA_DIR / game_context.field['template_path']
 
-        if not (RECORDINGS_DIR / game_context.file_name).exists():
-            logging.warning(f"Recording not found: {game_context.file_name}, skipping")
+        recording_file = file_override or game_context.file_name
+        if not (RECORDINGS_DIR / recording_file).exists():
+            logging.warning(f"Recording not found: {recording_file}, skipping")
             continue
 
         clip_subdir = CLIPS_DIR / game_context.clip_folder_name()
@@ -69,16 +73,16 @@ def main(games=None, reprocess=False):
             f"goal_*_{game_context.team_name}_{game_context.game_date}.mp4"
         ))
         if existing_goals and not reprocess:
-            logging.info(f"Already processed: {game_context.file_name}, skipping")
+            logging.info(f"Already processed: {recording_file}, skipping")
             continue
 
-        logging.info(f"Processing video: {game_context.file_name}")
+        logging.info(f"Processing video: {recording_file}")
         video_service.set_template(template_path)
         digit_region = ScoreRegion.HOME if game_context.is_home else ScoreRegion.AWAY
         goals_found = 0
 
         try:
-            for timestamp, frame in video_service.stream_frames(game_context.file_name, sample_rate=1):
+            for timestamp, frame in video_service.stream_frames(recording_file, sample_rate=1):
                 digit_processed = video_service.get_digit_region(
                     frame,
                     game_context.field,
@@ -93,36 +97,46 @@ def main(games=None, reprocess=False):
                 is_valid_score, real_score = video_service.validate_score(score)
 
                 if is_valid_score:
-                    video_service.clip_goal(game_context, real_score, timestamp - 30, 30)
+                    executor.submit(
+                        video_service.clip_goal,
+                        game_context,
+                        real_score,
+                        timestamp - 30,
+                        30,
+                        file_override
+                    )
                     goals_found += 1
                     logging.info(f"Found goal {goals_found}: {real_score}")
 
-            logging.info(f"Processing complete: {game_context.file_name}, found {goals_found} goals")
+            logging.info(f"Processing complete: {recording_file}, found {goals_found} goals")
 
-            if goals_found > 0:
+            if goals_found > 0 and send:
                 link = clip_exporter_service.upload_folder(clip_subdir)
                 clip_exporter_service.send_highlights(folder_paths, link)
 
         except Exception as e:
-            logging.error(f"Failed to process {game_context.file_name}: {e}")
+            logging.error(f"Failed to process {recording_file}: {e}")
 
         finally:
             video_service.reset_after_game()
 
+    executor.shutdown(wait=True)
 
 if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser()
-        parser.add_argument("--team", type=str, required=True)
-        parser.add_argument("--opponent", type=str, required=True)
+        parser.add_argument("--file", type=str, default=None, help="Override filename e.g. west_*.mp4")
+        parser.add_argument("--team", type=str, required=False)
+        parser.add_argument("--opponent", type=str, required=False)
         parser.add_argument("--field", type=str, choices=["East Field", "West Field"], required=True)
         parser.add_argument("--date", type=str, required=True, help="e.g. 20260416")
-        parser.add_argument("--is-home", required=True, default=False)
-        parser.add_argument("--reprocess", required=True, help="Skip already processed check", default=True)
+        parser.add_argument("--is-home", action="store_true", default=False)
+        parser.add_argument("--reprocess", action="store_true", help="Skip already processed check", default=False)
+        parser.add_argument("--send", type=lambda x: x.lower() != 'false', default=True, help="Send highlights (default: True)")
 
         args = parser.parse_args()
         game = build_game_from_args(args)
-        main(games=[game], reprocess=args.reprocess)
+        main(games=[game], reprocess=args.reprocess, file_override=args.file, send=args.send)
     else:
         main()

@@ -27,7 +27,7 @@ class EmailSender:
         """Builds and sends the highlights clip_exporter."""
 
         subject, body = self._build_email_content(folders, link)
-        self._send(subject, body, link)
+        self._send(subject, body)
 
     def _build_email_content(self, valid_folders, link):
         """Builds subject and body from folder names."""
@@ -43,7 +43,7 @@ class EmailSender:
 
         return subject, body
 
-    def _send(self, subject, body, folder_paths):
+    def _send(self, subject, body):
         """Builds the MIME message and sends it."""
 
         msg = MIMEMultipart()
@@ -59,7 +59,7 @@ class EmailSender:
 
                 server.login(self.email, self.password)
                 server.sendmail(self.email, self.to, msg.as_string())
-            logging.info(f"Email sent successfully with {len(folder_paths)} folder(s).")
+            logging.info(f"Email sent successfully.")
 
         except smtplib.SMTPAuthenticationError:
             logging.error("Authentication failed. Check your clip_exporter/password in config.")

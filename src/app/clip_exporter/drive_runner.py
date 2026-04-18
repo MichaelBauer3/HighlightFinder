@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-from datetime import timedelta, datetime, UTC, timezone
+from datetime import timedelta, datetime, timezone
 from pathlib import Path
 
 

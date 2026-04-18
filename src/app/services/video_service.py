@@ -37,8 +37,8 @@ class VideoService:
     def validate_score(self, score: int) -> tuple[bool, int]:
         return self.score_validator.validate_score(score)
 
-    def clip_goal(self, game_context: GameContext, real_score: int, start: int, duration: int) -> bool:
-        return self.video_loader.clip_video(game_context, real_score, start, duration)
+    def clip_goal(self, game_context: GameContext, real_score: int, start: int, duration: int, file_override=None) -> bool:
+        return self.video_loader.clip_video(game_context, real_score, start, duration, file_override=file_override)
 
     def delete_video(self, file_name: str) -> bool:
         return self.video_loader.delete_video(file_name)
