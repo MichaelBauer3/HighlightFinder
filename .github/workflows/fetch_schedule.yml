@@ -1,9 +1,10 @@
 name: Fetch Game Schedule
 
 on:
-  # Run every Sunday at 12:00 PM EST / 1:00 PM EDT
+  # Run every Monday at Midnight
   schedule:
-    - cron: '0 17 * * 0'
+    - cron: '0 0 * * 1'
+      timezone: "America/New_York"
 
   workflow_dispatch:
     inputs:
