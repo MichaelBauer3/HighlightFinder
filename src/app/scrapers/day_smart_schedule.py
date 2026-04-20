@@ -96,10 +96,10 @@ class DaySmartSchedule:
             home_team = team_links[1].text.strip().lower()
 
             # Check if our team is in this game
-            if team_name not in [away_team, home_team]:
+            if not any(team_name in team for team in [away_team, home_team]):
                 return None
 
-            is_home = (team_name == home_team)
+            is_home = team_name in home_team
             opponent = away_team if is_home else home_team
 
             # Extract date
