@@ -1,7 +1,39 @@
 {
-  "updated_at": "2026-04-20T18:08:35.739576",
+  "updated_at": "2026-04-20T18:27:20.557108",
   "fetched_by": "github-actions",
   "games": [
+    {
+      "team": "ewoks united",
+      "opponent": "03 blue lock",
+      "datetime": "2026-04-23T18:00:00",
+      "date": "2026-04-23",
+      "time": "06:00",
+      "day_of_week": "Thursday",
+      "field": "East Field",
+      "location": "Rochester Sports Garden: East Field",
+      "is_home": false,
+      "display_time": "6:00pm - 6:50pm",
+      "game_year": "2026",
+      "game_month": "04",
+      "game_day": "23",
+      "game_month_and_year": "April 2026"
+    },
+    {
+      "team": "ewoks fc",
+      "opponent": "01 hollywood",
+      "datetime": "2026-04-23T21:00:00",
+      "date": "2026-04-23",
+      "time": "09:00",
+      "day_of_week": "Thursday",
+      "field": "East Field",
+      "location": "Rochester Sports Garden: East Field",
+      "is_home": false,
+      "display_time": "9:00pm - 9:50pm",
+      "game_year": "2026",
+      "game_month": "04",
+      "game_day": "23",
+      "game_month_and_year": "April 2026"
+    },
     {
       "team": "tony's tigers",
       "opponent": "turntable roc",
@@ -21,5 +53,5 @@
   ],
   "status": "success",
   "team_count": 3,
-  "game_count": 1
+  "game_count": 3
 }
