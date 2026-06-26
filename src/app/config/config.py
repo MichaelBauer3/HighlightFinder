@@ -124,6 +124,7 @@ DIGITS_DIR = DATA_DIR / "digits"
 CLIPS_DIR = DATA_DIR / "clips"
 METADATA_DIR = DATA_DIR / "metadata"
 LOGS_DIR = ROOT_DIR / "logs"
+SECRETS_DIR = ROOT_DIR / "secrets"
 
 ML_DIR = APP_DIR / "ml"
 

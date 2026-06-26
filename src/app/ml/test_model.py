@@ -4,10 +4,10 @@ import numpy as np
 import tensorflow as tf
 from ai_edge_litert.interpreter import Interpreter
 
-from app.config.config import ML_DIR
+from app.config.config import ML_DIR, DIGITS_DIR
 
 
-def test_random_samples_tflite(interpreter, dataset_root="../../../data/digits/labeled", num_samples=10):
+def test_random_samples_tflite(interpreter, dataset_root=f"{str(DIGITS_DIR)}/labeled", num_samples=10):
     """
     Test a TFLite model against random samples from the dataset.
     """
@@ -60,7 +60,7 @@ def main():
     interpreter = Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 
-    test_random_samples_tflite(interpreter, dataset_root="../../../data/digits/labeled", num_samples=2000)
+    test_random_samples_tflite(interpreter, dataset_root=f"{DIGITS_DIR}/labeled", num_samples=2000)
 
 
 if __name__ == "__main__":

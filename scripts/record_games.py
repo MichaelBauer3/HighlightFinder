@@ -38,7 +38,8 @@ def main(games=None, skip_occurred_check=False):
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[logging.StreamHandler(sys.stdout)]
+        handlers=[logging.StreamHandler(sys.stdout)],
+        force=True
     )
 
     if games is None:
@@ -93,7 +94,7 @@ def main(games=None, skip_occurred_check=False):
                 time.sleep(10)
 
                 # Record the game (Adjust 60 to N for N minutes)
-                duration = 60 * 60
+                duration = 67 * 60
                 success = video_service.screen_record_for_duration(recording_path, duration)
 
                 if success:

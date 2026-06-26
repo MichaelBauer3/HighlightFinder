@@ -143,25 +143,13 @@ class LiveBarnVideo:
             raise
 
     def _select_vod_game(self, game_time: str, day: str, month_and_year: str):
-        """
-        Select specific VOD game after VOD button is clicked
-
-        Args:
-            game_time: time of the game
-            day: day of the game
-            month_and_year: month and year of the game
-        """
         month = month_and_year.split(' ')[0]
         try:
             month_and_year_selected = datetime.now().strftime("%B %Y")
             if month_and_year_selected != month_and_year:
                 self._get_previous_month()
 
-            day_button = self.wait.until(
-                ec.element_to_be_clickable(
-                    (By.XPATH, f"//div[.//span[text()='{month_and_year}'] and .//span[text()='Sun'] and .//span[text()='Sat']]//div[span[text()='{day}']]")
-                )
-            )
+            day_button = self._get_day_button(day, month_and_year)
             day_button.click()
             time.sleep(1)
 
@@ -264,3 +252,30 @@ class LiveBarnVideo:
 
         except Exception as e:
             logger.error(f"Critical failure in Full Screen / Pano toggle: {e}")
+
+
+    def _get_day_button(self, day: str, month_and_year: str):
+        """
+        Find the correct day button using calendar grid position
+        rather than class names or order of elements.
+        """
+
+        # Find what day of the week the 1st falls on (0=Mon, 6=Sun)
+        first_of_month = datetime.strptime(f"1 {month_and_year}", "%d %B %Y")
+
+        start_offset = first_of_month.weekday() % 7
+        target_index = start_offset + int(day) - 1
+
+        all_day_cells = self.driver.find_elements(
+            By.XPATH,
+            f"//div[.//span[text()='{month_and_year}'] and .//span[text()='Sun'] and .//span[text()='Sat']]"
+            f"//div[span]"
+        )
+
+        day_cells = [cell for cell in all_day_cells if cell.find_element(By.XPATH, "span").text.isdigit()]
+
+        if target_index >= len(day_cells):
+            raise Exception(f"Could not find day {day} in {month_and_year} at grid index {target_index}")
+
+        logger.info(f"Targeting grid index {target_index} for day {day} (month starts on offset {start_offset})")
+        return day_cells[target_index]

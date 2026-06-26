@@ -12,7 +12,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-from app.config.config import GOOGLE_FOLDER_ID, GOOGLE_CREDENTIALS_PATH, GOOGLE_TOKEN_PATH, SCRIPT_DIR
+from app.config.config import GOOGLE_FOLDER_ID, GOOGLE_CREDENTIALS_PATH, GOOGLE_TOKEN_PATH, SCRIPT_DIR, SECRETS_DIR
 
 logging.basicConfig(
     level=logging.INFO,
@@ -25,8 +25,8 @@ class DriveRunner:
     SCOPES = ["https://www.googleapis.com/auth/drive"]
 
     def __init__(self):
-        self.google_credentials_path = Path(SCRIPT_DIR, GOOGLE_CREDENTIALS_PATH)
-        self.google_token_path = Path(SCRIPT_DIR, GOOGLE_TOKEN_PATH)
+        self.google_credentials_path = Path(SECRETS_DIR, GOOGLE_CREDENTIALS_PATH)
+        self.google_token_path = Path(SECRETS_DIR, GOOGLE_TOKEN_PATH)
         self.service = build("drive", "v3", credentials=self._get_credentials())
 
     def _get_credentials(self) -> service_account.Credentials:

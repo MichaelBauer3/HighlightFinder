@@ -2,7 +2,9 @@ import logging
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.webdriver import WebDriver
+from webdriver_manager.chrome import ChromeDriverManager
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +36,8 @@ class DriverManager:
         """Initialize the Chrome WebDriver"""
         try:
             chrome_options = DriverManager.create_chrome_options(headless)
-            driver = webdriver.Chrome(options=chrome_options)
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=chrome_options)
             driver.implicitly_wait(10)
             driver.maximize_window()
             logger.info("Chrome WebDriver initialized successfully")

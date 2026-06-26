@@ -6,7 +6,7 @@ from app.video import VideoLoader
 from app.video.scoreboard_finder import ScoreboardFinder
 from app.config.config import FIELD_CONFIGS, METADATA_DIR, RECORDINGS_DIR, DIGITS_DIR
 
-VIDEO_PATH = RECORDINGS_DIR / "ewoks_fc_vs_sugandese_fc_20260416.mp4"
+VIDEO_PATH = RECORDINGS_DIR / "ewoks_fc_vs_monroe_united_20260625.mp4"
 FIELD = "West Field"
 
 # Get both regions
