@@ -38,38 +38,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
 
-      - name: Install ChromeDriver
-        run: |
-          # Get the installed Chrome version
-          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-          echo "Chrome version: $CHROME_VERSION"
-          
-          # Extract major version
-          CHROME_MAJOR=$(echo $CHROME_VERSION | cut -d '.' -f 1)
-          echo "Chrome major version: $CHROME_MAJOR"
-          
-          # Get the matching ChromeDriver version for this Chrome version
-          CHROMEDRIVER_VERSION=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/latest-versions-per-milestone-with-downloads.json" | \
-            jq -r ".milestones.\"$CHROME_MAJOR\".version")
-          
-          echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
-          
-          # Download the matching ChromeDriver
-          CHROMEDRIVER_URL="https://storage.googleapis.com/chrome-for-testing-public/$CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip"
-          echo "Downloading ChromeDriver from: $CHROMEDRIVER_URL"
-          
-          wget -q "$CHROMEDRIVER_URL" -O chromedriver-linux64.zip
-          unzip -q chromedriver-linux64.zip
-          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
-          sudo chmod +x /usr/local/bin/chromedriver
-          
-          echo "Installed ChromeDriver version:"
-          chromedriver --version
-          
-
       - name: Install Python dependencies
         run: |
-          pip install selenium requests
+          pip install selenium requests webdriver-manager
 
       - name: Fetch schedule from website
         env:
@@ -91,7 +62,6 @@ jobs:
           git config --global user.email 'actions@github.com'
           git add data/metadata/schedule_cache.json
           
-          # Only commit if there are changes
           if ! git diff --staged --quiet; then
             git commit -m "Update game schedule - $(date +'%Y-%m-%d %H:%M UTC')"
             git push
