@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-08-03T06:57:34.807604",
+  "updated_at": "2026-08-10T05:24:11.195247",
   "fetched_by": "github-actions",
   "games": [
     {
       "team": "ewoks united",
-      "opponent": "parking lots",
-      "datetime": "2026-08-06T18:30:00",
-      "date": "2026-08-06",
+      "opponent": "sugandese fc",
+      "datetime": "2026-08-13T18:30:00",
+      "date": "2026-08-13",
       "time": "06:30",
       "day_of_week": "Thursday",
       "field": "West Field",
@@ -15,43 +15,27 @@
       "display_time": "6:30pm - 7:20pm",
       "game_year": "2026",
       "game_month": "08",
-      "game_day": "6",
+      "game_day": "13",
       "game_month_and_year": "August 2026"
     },
     {
       "team": "ewoks fc",
-      "opponent": "dynamo",
-      "datetime": "2026-08-06T20:00:00",
-      "date": "2026-08-06",
-      "time": "08:00",
+      "opponent": "angry penguins",
+      "datetime": "2026-08-13T21:00:00",
+      "date": "2026-08-13",
+      "time": "09:00",
       "day_of_week": "Thursday",
       "field": "East Field",
       "location": "Rochester Sports Garden: East Field",
       "is_home": false,
-      "display_time": "8:00pm - 8:50pm",
+      "display_time": "9:00pm - 9:50pm",
       "game_year": "2026",
       "game_month": "08",
-      "game_day": "6",
-      "game_month_and_year": "August 2026"
-    },
-    {
-      "team": "tony's tigers",
-      "opponent": "turntable roc",
-      "datetime": "2026-08-09T14:30:00",
-      "date": "2026-08-09",
-      "time": "02:30",
-      "day_of_week": "Sunday",
-      "field": "West Field",
-      "location": "Rochester Sports Garden: West Field",
-      "is_home": false,
-      "display_time": "2:30pm - 3:10pm",
-      "game_year": "2026",
-      "game_month": "08",
-      "game_day": "9",
+      "game_day": "13",
       "game_month_and_year": "August 2026"
     }
   ],
   "status": "success",
   "team_count": 3,
-  "game_count": 3
+  "game_count": 2
 }
