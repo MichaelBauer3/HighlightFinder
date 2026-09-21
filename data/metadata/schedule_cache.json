@@ -1,28 +1,12 @@
 {
-  "updated_at": "2026-09-14T09:35:11.609949",
+  "updated_at": "2026-09-21T09:37:12.518838",
   "fetched_by": "github-actions",
   "games": [
     {
-      "team": "ewoks united",
-      "opponent": "real madridtown",
-      "datetime": "2026-09-17T19:00:00",
-      "date": "2026-09-17",
-      "time": "07:00",
-      "day_of_week": "Thursday",
-      "field": "East Field",
-      "location": "Rochester Sports Garden: East Field",
-      "is_home": true,
-      "display_time": "7:00pm - 7:50pm",
-      "game_year": "2026",
-      "game_month": "09",
-      "game_day": "17",
-      "game_month_and_year": "September 2026"
-    },
-    {
       "team": "ewoks fc",
-      "opponent": "monroe united",
-      "datetime": "2026-09-17T20:00:00",
-      "date": "2026-09-17",
+      "opponent": "jack rabbits",
+      "datetime": "2026-09-24T20:00:00",
+      "date": "2026-09-24",
       "time": "08:00",
       "day_of_week": "Thursday",
       "field": "East Field",
@@ -31,11 +15,43 @@
       "display_time": "8:00pm - 8:50pm",
       "game_year": "2026",
       "game_month": "09",
-      "game_day": "17",
+      "game_day": "24",
+      "game_month_and_year": "September 2026"
+    },
+    {
+      "team": "ewoks united",
+      "opponent": "champs",
+      "datetime": "2026-09-24T20:30:00",
+      "date": "2026-09-24",
+      "time": "08:30",
+      "day_of_week": "Thursday",
+      "field": "West Field",
+      "location": "Rochester Sports Garden: West Field",
+      "is_home": true,
+      "display_time": "8:30pm - 9:20pm",
+      "game_year": "2026",
+      "game_month": "09",
+      "game_day": "24",
+      "game_month_and_year": "September 2026"
+    },
+    {
+      "team": "tony's tigers",
+      "opponent": "bts athletics",
+      "datetime": "2026-09-27T12:30:00",
+      "date": "2026-09-27",
+      "time": "12:30",
+      "day_of_week": "Sunday",
+      "field": "West Field",
+      "location": "Rochester Sports Garden: West Field",
+      "is_home": true,
+      "display_time": "12:30pm - 1:20pm",
+      "game_year": "2026",
+      "game_month": "09",
+      "game_day": "27",
       "game_month_and_year": "September 2026"
     }
   ],
   "status": "success",
   "team_count": 3,
-  "game_count": 2
+  "game_count": 3
 }
